@@ -1,9 +1,8 @@
 import 'dart:async';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'Client.dart';
 import 'Controleur.dart';
-import 'inscrire.dart';
+import 's\'inscrire.dart';
 import 'login.dart';
 import 'package:firebase_core/firebase_core.dart';
 
@@ -25,7 +24,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: inscription(),
+      home: const SplachScreen(),
     );
   }
 }
@@ -42,9 +41,9 @@ class _SplachScreenState extends State<SplachScreen> {
     // TODO: implement initState
     super.initState();
     Timer(
-      Duration(milliseconds: 3000),
+      const Duration(milliseconds: 3000),
           ()=>Navigator.push(context,
-          MaterialPageRoute(builder: (context) => Acceuil())),
+          MaterialPageRoute(builder: (context) => const Acceuil())),
 
     );
   }
@@ -56,7 +55,7 @@ class _SplachScreenState extends State<SplachScreen> {
         child: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
-            children: [
+            children: const [
               Card(
                 child: Image(
                   image: AssetImage('Images/playstore.png'),

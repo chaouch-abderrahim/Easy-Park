@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
@@ -25,9 +24,9 @@ class _AcceuilState extends State<Acceuil> {
   Widget title() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
-      children: [
+      children: const [
         Padding(
-          padding: const EdgeInsets.only(top: 100, bottom: 30),
+          padding: EdgeInsets.only(top: 100, bottom: 30),
           child: Text(
             'Bienvenu chez Easy Park',
             style: TextStyle(
@@ -38,7 +37,7 @@ class _AcceuilState extends State<Acceuil> {
     );
   }
 
-  Widget Label({required String str, Color? c = Colors.white}) {
+  Widget label({required String str, Color? c = Colors.white}) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
@@ -89,16 +88,18 @@ class _AcceuilState extends State<Acceuil> {
        else{
         try {
           final newclient = await _auth.signInWithEmailAndPassword(
-              email: email, password: password);
-          if (newclient != null) {
-            if (email.compareTo("controleur@gmail.com") == 0 &&
-                password.compareTo("controleur") == 0) {
+              email: email, password: password).then((value)=>{
+          if (email.compareTo("controleur@gmail.com") == 0 &&
+          password.compareTo("controleur") == 0) {
               Navigator.push(
-                  context, MaterialPageRoute(builder: (context) => Control()));
-            } else
-              Navigator.push(
-                  context, MaterialPageRoute(builder: (context) => clients()));
-          }
+              context, MaterialPageRoute(builder: (context) => const Control()))
+        } else {
+        Navigator.push(
+        context, MaterialPageRoute(builder: (context) => const clients()))
+        }
+          });
+
+
           setState(() {
             etat=false;
             _validatemail=false;
@@ -116,9 +117,9 @@ class _AcceuilState extends State<Acceuil> {
       },
       style: ButtonStyle(
         backgroundColor: MaterialStateProperty.all(Colors.white),
-        side: MaterialStateProperty.all(BorderSide(color: Colors.grey)),
+        side: MaterialStateProperty.all(const BorderSide(color: Colors.grey)),
       ),
-      child: Text(
+      child: const Text(
         'Se connecter',
         style: TextStyle(
           fontSize: 20,
@@ -138,7 +139,7 @@ class _AcceuilState extends State<Acceuil> {
         children: [
           TextButton(
             onPressed: () {},
-            child: Text(
+            child: const Text(
               'S\'inscrire',
               style: TextStyle(
                 color: Colors.white,
@@ -150,7 +151,7 @@ class _AcceuilState extends State<Acceuil> {
           ),
           TextButton(
             onPressed: () {},
-            child: Text(
+            child: const Text(
               'Mote de passe oublier ?',
               style: TextStyle(
                 color: Colors.white,
@@ -173,9 +174,10 @@ class _AcceuilState extends State<Acceuil> {
       resizeToAvoidBottomInset: false,
       body: ModalProgressHUD(
         inAsyncCall: spin,
-        child: Column(children: [
+        child: Column(
+            children: [
           title(),
-          Label(str: 'Email :'),
+          label(str: 'Email :'),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 12),
             child: TextField(
@@ -191,13 +193,13 @@ class _AcceuilState extends State<Acceuil> {
                 border: InputBorder.none,
                 filled: true,
                 hintText: 'Email',
-                hintStyle: TextStyle(
+                hintStyle: const TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.w400,
                   color: Colors.black,
                   fontFamily: 'PT',
                 ),
-                prefixIcon: Icon(
+                prefixIcon: const Icon(
                   Icons.email,
                   color: Colors.orange,
                   size: 23,
@@ -206,7 +208,7 @@ class _AcceuilState extends State<Acceuil> {
             ),
           ),
 
-          Label(str: 'Password :'),
+          label(str: 'Password :'),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 12),
             child: TextField(
@@ -223,13 +225,13 @@ class _AcceuilState extends State<Acceuil> {
                 border: InputBorder.none,
                 filled: true,
                 hintText: 'pasword',
-                hintStyle: TextStyle(
+                hintStyle: const TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.w400,
                   color: Colors.black,
                   fontFamily: 'PT',
                 ),
-                prefixIcon: Icon(
+                prefixIcon: const Icon(
                   Icons.lock,
                   color: Colors.orange,
                   size: 23,
@@ -238,7 +240,7 @@ class _AcceuilState extends State<Acceuil> {
             ),
           ),
 
-          SizedBox(
+          const SizedBox(
             height: 32,
           ),
          Visibility(

@@ -1,14 +1,13 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-class inscription extends StatefulWidget {
-  const inscription({Key? key}) : super(key: key);
+class Inscription extends StatefulWidget {
+  const Inscription({Key? key}) : super(key: key);
 
   @override
-  _inscriptionState createState() => _inscriptionState();
+  _InscriptionState createState() => _InscriptionState();
 }
 
-class _inscriptionState extends State<inscription> {
+class _InscriptionState extends State<Inscription> {
   bool v_nom = false;
   bool v_prenom = false;
   bool v_tele = false;
