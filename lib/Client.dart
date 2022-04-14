@@ -1,15 +1,14 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
-class clients extends StatefulWidget {
-  const clients({Key? key}) : super(key: key);
+class Client extends StatefulWidget {
+  const Client({Key? key}) : super(key: key);
 
   @override
-  _clientsState createState() => _clientsState();
+  _ClientState createState() => _ClientState();
 }
 
-class _clientsState extends State<clients> {
+class _ClientState extends State<Client> {
   final _auth = FirebaseAuth.instance;
 
   late User signeUser;
@@ -39,10 +38,10 @@ class _clientsState extends State<clients> {
                 "Images/playstore.png",
                 height: 40,
               ),
-              SizedBox(
+              const SizedBox(
                 width: 80,
               ),
-              Text(
+              const Text(
                 "Easy Park",
                 style: TextStyle(
                   fontFamily: "Nunito",
@@ -64,7 +63,7 @@ class _clientsState extends State<clients> {
                 // handle the press
               },
             ),
-            SizedBox(
+            const SizedBox(
               width: 20,
             ),
           ],
@@ -78,7 +77,7 @@ class _clientsState extends State<clients> {
               Center(
                 child: Text(
                   "$curUser",
-                  style: TextStyle(
+                  style: const TextStyle(
                     color: Colors.black,
                     fontWeight: FontWeight.w900,
                     fontFamily: "PTSans",

@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:easy_park/s\'inscrire.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
@@ -95,7 +96,7 @@ class _AcceuilState extends State<Acceuil> {
               context, MaterialPageRoute(builder: (context) => const Control()))
         } else {
         Navigator.push(
-        context, MaterialPageRoute(builder: (context) => const clients()))
+        context, MaterialPageRoute(builder: (context) => const Client()))
         }
           });
 
@@ -138,7 +139,9 @@ class _AcceuilState extends State<Acceuil> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           TextButton(
-            onPressed: () {},
+            onPressed: () {
+              Navigator.push(context, MaterialPageRoute(builder:(context)=>const Inscription()));
+            },
             child: const Text(
               'S\'inscrire',
               style: TextStyle(
@@ -152,7 +155,7 @@ class _AcceuilState extends State<Acceuil> {
           TextButton(
             onPressed: () {},
             child: const Text(
-              'Mote de passe oublier ?',
+              'Mot de passe oublier ?',
               style: TextStyle(
                 color: Colors.white,
                 fontFamily: 'PT',

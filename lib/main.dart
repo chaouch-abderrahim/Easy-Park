@@ -1,8 +1,5 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'Client.dart';
-import 'Controleur.dart';
-import 's\'inscrire.dart';
 import 'login.dart';
 import 'package:firebase_core/firebase_core.dart';
 

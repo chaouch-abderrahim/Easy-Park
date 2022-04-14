@@ -1,323 +1,397 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class Inscription extends StatefulWidget {
   const Inscription({Key? key}) : super(key: key);
 
   @override
-  _InscriptionState createState() => _InscriptionState();
+  State<Inscription> createState() => _InscriptionState();
 }
 
 class _InscriptionState extends State<Inscription> {
-  bool v_nom = false;
-  bool v_prenom = false;
-  bool v_tele = false;
-  bool v_matricule = false;
-  bool v_adress = false;
-  bool _v_email = false;
-   late String email='', nom, prenom, matricule, adress, tele;
-  Widget Label({required String str, Color? c = Colors.white}) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.start,
-      children: [
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 15),
-          child: Text(
-            str,
-            style:
-                TextStyle(fontWeight: FontWeight.w600, fontSize: 20, color: c),
-          ),
-        ),
-      ],
-    );
+  final controller = TextEditingController();
+  final controllerP = TextEditingController();
+  final controllerT = TextEditingController();
+  final controllerM = TextEditingController();
+  final controllerE = TextEditingController();
+  final controllerPwd = TextEditingController();
+  final controllerA = TextEditingController();
+  String nom = "",prenom="",tele="",email="",password="",matricule="",adress="";
+  bool valideNom = false,validePrenom=false,valideTele=false,valideAdress=false,valideEmaill=false,valideMatricule=false,validePassword=false,visible=false;
+  @override
+  void initState() {
+    super.initState();
+    controller.addListener(() => setState(() {}));
+    controllerP.addListener(() => setState(() {}));
+    controllerA.addListener(() => setState(() {}));
+    controllerM.addListener(() => setState(() {}));
+    controllerT.addListener(() => setState(() {}));
+    controllerPwd.addListener(() => setState(() {}));
+    controllerE.addListener(() => setState(() {}));
   }
-
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        resizeToAvoidBottomInset:false,
         backgroundColor: Colors.amber,
-        body: Padding(
-
-          padding:
-              const EdgeInsets.only(top: 4, left: 10, right: 10, bottom: 2),
-          child: Builder(
-            builder: (context) {
-              return Column(
-
-                children: [
-                  SizedBox(
-                    height: 50,
-                  ),
-                  TextField(
-                    onChanged: (value) {
+        resizeToAvoidBottomInset: false,
+        appBar: AppBar(
+          title: const Text("Inscription "),
+          backgroundColor: Colors.amber,
+        ),
+        body: ListView(
+          children: [
+            Column(children: [
+              Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 20.0, vertical: 20),
+                child: TextField(
+                  onChanged: (value) {
+                    setState(() {
                       nom = value;
-                    },
-                    cursorColor: Colors.transparent,
-                    obscureText: false,
-                    style: const TextStyle(color: Colors.brown, fontSize: 20),
-                    decoration: InputDecoration(
-                      errorText: v_nom ? '* Champ obligatoire' : null,
-                      fillColor: Colors.amberAccent,
-                      border: InputBorder.none,
-                      filled: true,
-                      hintText: "Nom",
-                      hintStyle: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.w400,
-                        color: Colors.black,
-                        fontFamily: 'PT',
-                      ),
-                      prefixIcon: Icon(
-                        Icons.face,
-                        color: Colors.orange,
-                        size: 23,
-                      ),
+                    });
+                  },
+                  controller: controller,
+                  scrollPadding: const EdgeInsets.all(22),
+                  obscureText: false,
+                  decoration: InputDecoration(
+                    filled: true,
+                    fillColor: Colors.amberAccent,
+                    enabledBorder: const OutlineInputBorder(
+                        borderSide:
+                            BorderSide(color: Colors.orangeAccent, width: 2.0)),
+                    focusedBorder: const OutlineInputBorder(
+                        borderSide:
+                            BorderSide(color: Colors.orange, width: 2.0)),
+                    labelText: "Nom",
+                    labelStyle: const TextStyle(color: Colors.black),
+                    prefixIcon: const Icon(
+                      Icons.face,
+                      color: Colors.orange,
                     ),
+                    suffixIcon: controller.text.isEmpty
+                        ? Container(
+                            width: 0,
+                          )
+                        : IconButton(
+                            onPressed: () {
+                              controller.clear();
+                            },
+                            icon: const Icon(
+                              Icons.close,
+                              color: Colors.deepOrange,
+                            )),
+                    errorText: valideNom ? "le champs est obligatoire *" : null,
                   ),
-                  SizedBox(
-                    height: 5,
-                  ),
-                  TextField(
-                    onChanged: (value) {
+                ),
+              )
+            ]),
+            Column(children: [
+              Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 20.0, vertical: 20),
+                child: TextField(
+                  onChanged: (value) {
+                    setState(() {
                       prenom = value;
-                    },
-                    cursorColor: Colors.transparent,
-                    obscureText: false,
-                    style: const TextStyle(color: Colors.brown, fontSize: 20),
-                    decoration: InputDecoration(
-                      errorText: v_prenom ? '* Champ obligatoire' : null,
-                      fillColor: Colors.amberAccent,
-                      border: InputBorder.none,
-                      filled: true,
-                      hintText: "Prenom",
-                      hintStyle: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.w400,
-                        color: Colors.black,
-                        fontFamily: 'PT',
-                      ),
-                      prefixIcon: Icon(
-                        Icons.face_outlined,
-                        color: Colors.orange,
-                        size: 23,
-                      ),
+                    });
+                  },
+                  controller: controllerP,
+                  scrollPadding: const EdgeInsets.all(22),
+                  obscureText: false,
+                  decoration: InputDecoration(
+                    filled: true,
+                    fillColor: Colors.amberAccent,
+                    enabledBorder: const OutlineInputBorder(
+                        borderSide:
+                            BorderSide(color: Colors.orangeAccent, width: 2.0)),
+                    focusedBorder: const OutlineInputBorder(
+                        borderSide:
+                            BorderSide(color: Colors.orange, width: 2.0)),
+                    labelText: "Prenom",
+                    labelStyle: const TextStyle(color: Colors.black),
+                    prefixIcon: const Icon(
+                      Icons.mood_sharp,
+                      color: Colors.orange,
                     ),
+                    suffixIcon: controllerP.text.isEmpty
+                        ? Container(
+                            width: 0,
+                          )
+                        : IconButton(
+                            onPressed: () {
+                              controllerP.clear();
+                            },
+                            icon: const Icon(
+                              Icons.close,
+                              color: Colors.deepOrange,
+                            )),
+                    errorText: validePrenom ? "le champs est obligatoire *" : null,
                   ),
-                  SizedBox(
-                    height: 5,
-                  ),
-                  TextField(
-                    onChanged: (value) {
+                ),
+              )
+            ]),
+            Column(children: [
+              Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 20.0, vertical: 20),
+                child: TextField(
+                  onChanged: (value) {
+                    setState(() {
                       tele = value;
-                    },
-                    cursorColor: Colors.transparent,
-                    obscureText: false,
-                    style: const TextStyle(color: Colors.brown, fontSize: 20),
-                    decoration: InputDecoration(
-                      errorText: v_tele? '* Champ obligatoire' : null,
-                      fillColor: Colors.amberAccent,
-                      border: InputBorder.none,
-                      filled: true,
-                      hintText: "Telephone",
-                      hintStyle: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.w400,
-                        color: Colors.black,
-                        fontFamily: 'PT',
-                      ),
-                      prefixIcon: Icon(
-                        Icons.alternate_email,
-                        color: Colors.orange,
-                        size: 23,
-                      ),
+                    });
+                  },
+                  controller: controllerT,
+                  scrollPadding: const EdgeInsets.all(22),
+                  obscureText: false,
+                  decoration: InputDecoration(
+                    filled: true,
+                    fillColor: Colors.amberAccent,
+                    enabledBorder: const OutlineInputBorder(
+                        borderSide:
+                            BorderSide(color: Colors.orangeAccent, width: 2.0)),
+                    focusedBorder: const OutlineInputBorder(
+                        borderSide:
+                            BorderSide(color: Colors.orange, width: 2.0)),
+                    labelText: "Tel",
+                    labelStyle: const TextStyle(color: Colors.black),
+                    prefixIcon: const Icon(
+                      Icons.phone_android,
+                      color: Colors.orange,
                     ),
+                    suffixIcon: controllerT.text.isEmpty
+                        ? Container(
+                            width: 0,
+                          )
+                        : IconButton(
+                            onPressed: () {
+                              controllerT.clear();
+                            },
+                            icon: const Icon(
+                              Icons.close,
+                              color: Colors.pink,
+                            )),
+                    errorText: valideTele ? "le champs est obligatoire *" : null,
                   ),
-                  SizedBox(
-                    height: 5,
-                  ),
-                  TextField(
-                    onChanged: (value) {
+                ),
+              )
+            ]),
+            Column(children: [
+              Padding(
+                padding:
+                const EdgeInsets.symmetric(horizontal: 20.0, vertical: 20),
+                child: TextField(
+                  onChanged: (value) {
+                    setState(() {
                       adress = value;
-                    },
-                    cursorColor: Colors.transparent,
-                    obscureText: false,
-                    style: const TextStyle(color: Colors.brown, fontSize: 20),
-                    decoration: InputDecoration(
-                      errorText: v_adress ? '* Champ obligatoire' : null,
-                      fillColor: Colors.amberAccent,
-                      border: InputBorder.none,
-                      filled: true,
-                      hintText: "Adress",
-                      hintStyle: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.w400,
-                        color: Colors.black,
-                        fontFamily: 'PT',
-                      ),
-                      prefixIcon: Icon(
-                        Icons.local_post_office,
-                        color: Colors.orange,
-                        size: 23,
-                      ),
+                    });
+                  },
+                  controller: controllerA,
+                  scrollPadding: const EdgeInsets.all(22),
+                  obscureText: false,
+                  decoration: InputDecoration(
+                    filled: true,
+                    fillColor: Colors.amberAccent,
+                    enabledBorder: const OutlineInputBorder(
+                        borderSide:
+                        BorderSide(color: Colors.orangeAccent, width: 2.0)),
+                    focusedBorder: const OutlineInputBorder(
+                        borderSide:
+                        BorderSide(color: Colors.orange, width: 2.0)),
+                    labelText: "Tel",
+                    labelStyle: const TextStyle(color: Colors.black),
+                    prefixIcon: const Icon(
+                      Icons.email,
+                      color: Colors.orange,
                     ),
+                    suffixIcon: controllerA.text.isEmpty
+                        ? Container(
+                      width: 0,
+                    )
+                        : IconButton(
+                        onPressed: () {
+                          controllerA.clear();
+                        },
+                        icon: const Icon(
+                          Icons.close,
+                          color: Colors.pink,
+                        )),
+                    errorText: valideAdress ? "le champs est obligatoire *" : null,
                   ),
-                  SizedBox(
-                    height: 5,
-                  ),
-                  TextField(
-                    onChanged: (value) {
+                ),
+              )
+            ]),
+            Column(children: [
+              Padding(
+                padding:
+                const EdgeInsets.symmetric(horizontal: 20.0, vertical: 20),
+                child: TextField(
+                  onChanged: (value) {
+                    setState(() {
                       matricule = value;
-                    },
-                    cursorColor: Colors.transparent,
-                    obscureText: false,
-                    style: const TextStyle(color: Colors.brown, fontSize: 20),
-                    decoration: InputDecoration(
-                      errorText: v_matricule ? '* Champ obligatoire' : null,
-                      fillColor: Colors.amberAccent,
-                      border: InputBorder.none,
-                      filled: true,
-                      hintText: "Matricule",
-                      hintStyle: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.w400,
-                        color: Colors.black,
-                        fontFamily: 'PT',
-                      ),
-                      prefixIcon: Icon(
-                        Icons.airport_shuttle,
-                        color: Colors.orange,
-                        size: 23,
-                      ),
+                    });
+                  },
+                  controller: controllerM,
+                  scrollPadding: const EdgeInsets.all(22),
+                  obscureText: false,
+                  decoration: InputDecoration(
+                    filled: true,
+                    fillColor: Colors.amberAccent,
+                    enabledBorder: const OutlineInputBorder(
+                        borderSide:
+                        BorderSide(color: Colors.orangeAccent, width: 2.0)),
+                    focusedBorder: const OutlineInputBorder(
+                        borderSide:
+                        BorderSide(color: Colors.orange, width: 2.0)),
+                    labelText: "Matricule",
+                    labelStyle: const TextStyle(color: Colors.black),
+                    prefixIcon: const Icon(
+                      Icons.king_bed_outlined,
+                      color: Colors.orange,
                     ),
+                    suffixIcon: controllerM.text.isEmpty
+                        ? Container(
+                      width: 0,
+                    )
+                        : IconButton(
+                        onPressed: () {
+                          controllerM.clear();
+                        },
+                        icon: const Icon(
+                          Icons.close,
+                          color: Colors.deepOrange,
+                        )),
+                    errorText: valideMatricule ? "le champs est obligatoire *" : null,
                   ),
-                  SizedBox(
-                    height: 5,
-                  ),
-                  TextField(
-                    onChanged: (value) {
+                ),
+              )
+            ]),
+            Column(children: [
+              Padding(
+                padding:
+                const EdgeInsets.symmetric(horizontal: 20.0, vertical: 20),
+                child: TextField(
+                  onChanged: (value) {
+                    setState(() {
                       email = value;
-                    },
-                    cursorColor: Colors.transparent,
-                    obscureText: false,
-                    style: const TextStyle(color: Colors.brown, fontSize: 20),
-                    decoration: InputDecoration(
-                      errorText: _v_email ? '* Champ obligatoire' : null,
-                      fillColor: Colors.amberAccent,
-                      border: InputBorder.none,
-                      filled: true,
-                      hintText: "Email",
-                      hintStyle: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.w400,
-                        color: Colors.black,
-                        fontFamily: 'PT',
-                      ),
-                      prefixIcon: Icon(
-                        Icons.alternate_email,
-                        color: Colors.orange,
-                        size: 23,
-                      ),
+                    });
+                  },
+                  controller: controllerE,
+                  scrollPadding: const EdgeInsets.all(22),
+                  obscureText: false,
+                  decoration: InputDecoration(
+                    filled: true,
+                    fillColor: Colors.amberAccent,
+                    enabledBorder: const OutlineInputBorder(
+                        borderSide:
+                        BorderSide(color: Colors.orangeAccent, width: 2.0)),
+                    focusedBorder: const OutlineInputBorder(
+                        borderSide:
+                        BorderSide(color: Colors.orange, width: 2.0)),
+                    labelText: "Email",
+                    labelStyle: const TextStyle(color: Colors.black),
+                    prefixIcon: const Icon(
+                      Icons.alternate_email,
+                      color: Colors.orange,
                     ),
+                    suffixIcon: controllerE.text.isEmpty
+                        ? Container(
+                      width: 0,
+                    )
+                        : IconButton(
+                        onPressed: () {
+                          controllerE.clear();
+                        },
+                        icon: const Icon(
+                          Icons.close,
+                          color: Colors.deepOrange,
+                        )),
+                    errorText: valideEmaill ? "le champs est obligatoire *" : null,
                   ),
-                  const SizedBox(
-                    height: 30,
-                  ),
-                  ElevatedButton(
+                ),
+              )
+            ]),
+            Column(children: [
+              Padding(
+                padding:
+                const EdgeInsets.symmetric(horizontal: 20.0, vertical: 20),
+                child: TextField(
+                  onChanged: (value) {
+                    setState(() {
+                      password = value;
+                    });
+                  },
+                  controller: controllerPwd,
+                  scrollPadding: const EdgeInsets.all(22),
+                  obscureText: visible,
+                  decoration: InputDecoration(
+                    filled: true,
+                    fillColor: Colors.amberAccent,
+                    enabledBorder: const OutlineInputBorder(
+                        borderSide:
+                        BorderSide(color: Colors.orangeAccent, width: 2.0)),
+                    focusedBorder: const OutlineInputBorder(
+                        borderSide:
+                        BorderSide(color: Colors.orange, width: 2.0)),
+                    labelText: "Password",
+                    labelStyle: const TextStyle(color: Colors.black),
+                    prefixIcon: const Icon(
+                      Icons.face,
+                      color: Colors.orange,
+                    ),
+                    suffixIcon: visible
+                        ? IconButton(
                     onPressed: () {
-
-                      if (email.isEmpty || nom.isEmpty || prenom.isEmpty || tele.isEmpty|| matricule.isEmpty || adress.isEmpty) {
-                        print("hello");
-
-                        if (email.isEmpty) {
-
+  setState(() {
+    visible=false;
+  });
+    },
+    icon: const Icon(
+    Icons.visibility_off_outlined,
+    color: Colors.deepOrange,
+    ))
+                        : IconButton(
+                        onPressed: () {
                           setState(() {
-                            _v_email = true;
-
+                            visible=true;
                           });
-                        } else {
-                          setState(() {
-
-                            _v_email = false;
-                          });
-                        }
-                        if (nom.isEmpty) {
-                          setState(() {
-                            v_nom = true;
-                            print("email null");
-                          });
-                        } else {
-                          setState(() {
-                            v_nom = false;
-                            print("email not");
-                          });
-                        }
-                        if (prenom.isEmpty) {
-                          setState(() {
-                            v_prenom = true;
-                          });
-                        } else {
-                          setState(() {
-                            v_prenom = false;
-                          });
-                        }
-                        if (tele.isEmpty) {
-                          setState(() {
-                            v_tele= true;
-                          });
-                        } else {
-                          setState(() {
-                            v_tele = false;
-                          });
-                        }
-                        if (adress.isEmpty) {
-                          setState(() {
-                            v_adress= true;
-                          });
-                        } else {
-                          setState(() {
-                            v_adress = false;
-                          });
-                        }
-                        if (matricule.isEmpty) {
-                          setState(() {
-                            v_matricule= true;
-                          });
-                        } else {
-                          setState(() {
-                            v_matricule = false;
-                          });
-                        }
-                      }
-
-
-                    },
-                    style: ButtonStyle(
-                      padding: MaterialStateProperty.all(
-                          EdgeInsets.only(left: 34, right: 34, top: 8, bottom: 8)),
-                      backgroundColor:
-                          MaterialStateProperty.all(Colors.orange[900]),
+                        },
+                        icon: const Icon(
+                          Icons.visibility,
+                          color: Colors.deepOrange,
+                        )),
+                    errorText: validePassword ? "le champs est obligatoire *" : null,
+                  ),
+                ),
+              )
+            ]),
+            Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+              ElevatedButton(
+                  onPressed: () {},
+                  child: const Text(
+                    " valider",
+                    style: TextStyle(
+                        fontSize: 20,
+                        fontStyle: FontStyle.italic,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white),
+                  ),
+                  style: ButtonStyle(
+                      padding: MaterialStateProperty.all<EdgeInsets>(
+                          EdgeInsets.all(10)),
+                      backgroundColor: MaterialStateProperty.all(Colors.red[900]),
+                      shadowColor: MaterialStateProperty.all(Colors.black),
                       shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                           RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(18.0),
-                              side: const BorderSide(color: Colors.red))),
-                      side: MaterialStateProperty.all(
-                          const BorderSide(color: Colors.grey)),
-                    ),
-                    child: const Text(
-                      'S\'inscrire',
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.w500,
-                        color: Colors.white,
-                        fontFamily: 'PT',
-                      ),
-                    ),
-                  )
-                ],
-              );
-            }
-          ),
+                        side: const BorderSide(
+                            color: Colors.white,
+                            style: BorderStyle.solid,
+                            width: 2),
+                        borderRadius: BorderRadius.circular(15),
+                      ))))
+            ]),
+            const SizedBox(height: 200,)
+          ],
         ),
       ),
     );
