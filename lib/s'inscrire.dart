@@ -1,3 +1,5 @@
+import 'dart:io';
+import 'package:image_picker/image_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -18,6 +20,34 @@ class _InscriptionState extends State<Inscription> {
   final controllerA = TextEditingController();
   String nom = "",prenom="",tele="",email="",password="",matricule="",adress="";
   bool valideNom = false,validePrenom=false,valideTele=false,valideAdress=false,valideEmaill=false,valideMatricule=false,validePassword=false,visible=false;
+  File?  img ;
+  final ImagePicker _picker = ImagePicker();
+  Future getImageCamera()async {
+    final  photo = await _picker.pickImage(source: (ImageSource.camera));
+    if(photo!=null) {
+      setState(()  {
+      img= File(photo.path);
+      print("ok");
+    });
+    }
+    else{
+      print("non image");
+    }
+
+  }
+  Future getImageGallery()async {
+    final  photo = await _picker.pickImage(source: (ImageSource.gallery));
+    if(photo!=null) {
+      setState(()  {
+        img= File(photo.path);
+        print("ok");
+      });
+    }
+    else{
+      print("non image");
+    }
+
+  }
   @override
   void initState() {
     super.initState();
@@ -29,6 +59,7 @@ class _InscriptionState extends State<Inscription> {
     controllerPwd.addListener(() => setState(() {}));
     controllerE.addListener(() => setState(() {}));
   }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -41,6 +72,95 @@ class _InscriptionState extends State<Inscription> {
         ),
         body: ListView(
           children: [
+            const SizedBox(height: 40,),
+            Center(
+              child: Stack(
+
+                  children: [
+                    Container(
+                   child: CircleAvatar(
+                      backgroundColor: Colors.deepOrange,
+
+                      radius: 70,
+                      child: CircleAvatar(
+                       backgroundImage: img != null? FileImage(img!) : null,
+                        radius: 64,
+                        child: img == null?  const Image(image:  AssetImage("Images/man.png"),):null,
+
+                      )
+                    )
+                    ),
+                    Positioned(
+                        top:90,
+                        left:70,
+                        child:RawMaterialButton(
+                      elevation:10,
+                      fillColor :Colors.deepOrange,
+                      child: const Icon(Icons.add_a_photo),
+                      onPressed: () {
+                        showDialog(context: context, builder: (BuildContext context){
+                          return  AlertDialog(
+                            title:const Text("Selection un option :",style:  TextStyle(fontWeight: FontWeight.w600,color:Colors.deepOrange),) ,
+                             content: SingleChildScrollView(
+                               child: ListBody(
+                                  children: [
+                          InkWell(
+                            onTap: () {
+                              getImageCamera();
+
+                            },
+                            splashColor: Colors.orange,
+                            child: Row(children: const [
+                              Padding(
+                                padding: EdgeInsets.all(8.0),
+                                child: Icon(Icons.camera,color: Colors.deepOrange,),
+                              ),
+                              Text("Camera",style: TextStyle(fontWeight: FontWeight.w500,fontFamily: "PT")),
+                            ],),
+
+                            ),
+                                    InkWell(
+                                      onTap: (){
+                                        getImageGallery();
+                                      },
+                                      splashColor: Colors.orange,
+                                      child: Row(children: const [
+                                        Padding(
+                                          padding: EdgeInsets.all(8.0),
+                                          child: Icon(Icons.image,color:Colors.deepOrange),
+                                        ),
+                                        Text("Gallery",style: TextStyle(fontWeight: FontWeight.w500,fontFamily: "PT")),
+
+                                      ],),
+
+                                    ),
+                                    InkWell(
+                                      onTap:(){
+                                        Navigator.pop(context, true);
+                                      },
+                                      splashColor: Colors.deepOrange,
+                                      child :Row(
+                                        children: const [
+                                          Padding(
+                                            padding: EdgeInsets.all(8.0),
+                                            child: Icon(Icons.remove_circle,color:Colors.red),
+                                          ),
+                                          Text("Fermer",style: TextStyle(fontWeight: FontWeight.w500,fontFamily: "PT",color: Colors.red,)),
+
+                                        ],
+                                      )
+                                    )
+                                 ]),
+                             ),
+                          );
+                        });
+                      },
+                          shape: const CircleBorder(),
+                          padding: const EdgeInsets.all(10),
+                    ) )
+
+              ]),
+            ),
             Column(children: [
               Padding(
                 padding:
@@ -198,7 +318,7 @@ class _InscriptionState extends State<Inscription> {
                     focusedBorder: const OutlineInputBorder(
                         borderSide:
                         BorderSide(color: Colors.orange, width: 2.0)),
-                    labelText: "Tel",
+                    labelText: "Adresse",
                     labelStyle: const TextStyle(color: Colors.black),
                     prefixIcon: const Icon(
                       Icons.email,

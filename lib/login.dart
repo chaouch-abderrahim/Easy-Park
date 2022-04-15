@@ -1,4 +1,4 @@
-import 'dart:async';
+
 import 'package:easy_park/s\'inscrire.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -88,7 +88,7 @@ class _AcceuilState extends State<Acceuil> {
        }
        else{
         try {
-          final newclient = await _auth.signInWithEmailAndPassword(
+         await _auth.signInWithEmailAndPassword(
               email: email, password: password).then((value)=>{
           if (email.compareTo("controleur@gmail.com") == 0 &&
           password.compareTo("controleur") == 0) {
