@@ -3,11 +3,17 @@ import 'package:image_picker/image_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import 'Controleur.dart';
+
 class Inscription extends StatefulWidget {
-  const Inscription({Key? key}) : super(key: key);
+int b=0;
+   Inscription(int b, {Key? key}) : super(key: key){
+     this.b=b;
+   }
+
 
   @override
-  State<Inscription> createState() => _InscriptionState();
+  State<Inscription> createState() => _InscriptionState(b);
 }
 
 class _InscriptionState extends State<Inscription> {
@@ -18,13 +24,21 @@ class _InscriptionState extends State<Inscription> {
   final controllerE = TextEditingController();
   final controllerPwd = TextEditingController();
   final controllerA = TextEditingController();
+  String erreurEmail="le champs est obligatoire",erreurNom="le champs est obligatoire",erreurPrenom="le champs est obligatoire",erreurMatricule="le champs est obligatoire",erreurAdress="le champs est obligatoire",erreurPassword="le champs est obligatoire";
+ String erreurTel="le champs est obligatoire";
   String nom = "",prenom="",tele="",email="",password="",matricule="",adress="";
   bool valideNom = false,validePrenom=false,valideTele=false,valideAdress=false,valideEmaill=false,valideMatricule=false,validePassword=false,visible=false;
   File?  img ;
   final ImagePicker _picker = ImagePicker();
+int a=0;
+  _InscriptionState(int b){
+    a=b;
+  }
+
   Future getImageCamera()async {
     final  photo = await _picker.pickImage(source: (ImageSource.camera));
     if(photo!=null) {
+
       setState(()  {
       img= File(photo.path);
       print("ok");
@@ -50,6 +64,8 @@ class _InscriptionState extends State<Inscription> {
   }
   @override
   void initState() {
+    print(a);
+    print("$a ddf");
     super.initState();
     controller.addListener(() => setState(() {}));
     controllerP.addListener(() => setState(() {}));
@@ -135,6 +151,24 @@ class _InscriptionState extends State<Inscription> {
 
                                     ),
                                     InkWell(
+                                        onTap:(){
+                                          setState(() {
+                                            img=null;
+                                          });
+                                        },
+                                        splashColor: Colors.deepOrange,
+                                        child :Row(
+                                          children: const [
+                                            Padding(
+                                              padding: EdgeInsets.all(8.0),
+                                              child: Icon(Icons.remove_circle,color:Colors.deepOrange),
+                                            ),
+                                            Text("Supprimer",style: TextStyle(fontWeight: FontWeight.w500,fontFamily: "PT",color: Colors.red,)),
+
+                                          ],
+                                        )
+                                    ),
+                                    InkWell(
                                       onTap:(){
                                         Navigator.pop(context, true);
                                       },
@@ -143,7 +177,7 @@ class _InscriptionState extends State<Inscription> {
                                         children: const [
                                           Padding(
                                             padding: EdgeInsets.all(8.0),
-                                            child: Icon(Icons.remove_circle,color:Colors.red),
+                                            child: Icon(Icons.close,color:Colors.red),
                                           ),
                                           Text("Fermer",style: TextStyle(fontWeight: FontWeight.w500,fontFamily: "PT",color: Colors.red,)),
 
@@ -201,7 +235,7 @@ class _InscriptionState extends State<Inscription> {
                               Icons.close,
                               color: Colors.deepOrange,
                             )),
-                    errorText: valideNom ? "le champs est obligatoire *" : null,
+                    errorText: valideNom ? erreurNom : null,
                   ),
                 ),
               )
@@ -246,7 +280,7 @@ class _InscriptionState extends State<Inscription> {
                               Icons.close,
                               color: Colors.deepOrange,
                             )),
-                    errorText: validePrenom ? "le champs est obligatoire *" : null,
+                    errorText: validePrenom ? erreurPrenom : null,
                   ),
                 ),
               )
@@ -291,7 +325,7 @@ class _InscriptionState extends State<Inscription> {
                               Icons.close,
                               color: Colors.pink,
                             )),
-                    errorText: valideTele ? "le champs est obligatoire *" : null,
+                    errorText: valideTele ? erreurTel : null,
                   ),
                 ),
               )
@@ -336,7 +370,7 @@ class _InscriptionState extends State<Inscription> {
                           Icons.close,
                           color: Colors.pink,
                         )),
-                    errorText: valideAdress ? "le champs est obligatoire *" : null,
+                    errorText: valideAdress ? erreurAdress : null,
                   ),
                 ),
               )
@@ -381,7 +415,7 @@ class _InscriptionState extends State<Inscription> {
                           Icons.close,
                           color: Colors.deepOrange,
                         )),
-                    errorText: valideMatricule ? "le champs est obligatoire *" : null,
+                    errorText: valideMatricule ? erreurMatricule: null,
                   ),
                 ),
               )
@@ -426,7 +460,7 @@ class _InscriptionState extends State<Inscription> {
                           Icons.close,
                           color: Colors.deepOrange,
                         )),
-                    errorText: valideEmaill ? "le champs est obligatoire *" : null,
+                    errorText: valideEmaill ? erreurEmail : null,
                   ),
                 ),
               )
@@ -456,7 +490,7 @@ class _InscriptionState extends State<Inscription> {
                     labelText: "Password",
                     labelStyle: const TextStyle(color: Colors.black),
                     prefixIcon: const Icon(
-                      Icons.face,
+                      Icons.password,
                       color: Colors.orange,
                     ),
                     suffixIcon: visible
@@ -480,14 +514,76 @@ class _InscriptionState extends State<Inscription> {
                           Icons.visibility,
                           color: Colors.deepOrange,
                         )),
-                    errorText: validePassword ? "le champs est obligatoire *" : null,
+                    errorText: validePassword ? erreurPassword : null,
                   ),
                 ),
               )
             ]),
             Row(mainAxisAlignment: MainAxisAlignment.center, children: [
               ElevatedButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    if(nom==""){
+                      setState(() {
+                        valideNom=true;
+                      });
+                    }else{ setState(() {
+                      valideNom=false;
+                    });}
+                    if(prenom==""){
+                      setState(() {
+                        validePrenom=true;
+                      });
+                    }else{ setState(() {
+                      validePrenom=false;
+                    });}
+                    if(tele==""){
+                      setState(() {
+                        valideTele=true;
+                      });
+                    }else{ setState(() {
+                      valideTele=false;
+                    });}
+                    if(adress==""){
+                      setState(() {
+                        valideAdress=true;
+                      });
+                    }else{ setState(() {
+                      valideAdress=false;
+                    });}
+                    if(matricule==""){
+                      setState(() {
+                        valideMatricule=true;
+                      });
+                    }else{ setState(() {
+                      valideMatricule=false;
+                    });}
+                    if(email=="" || email.contains("@")==false){
+                      setState(() {
+                        valideEmaill=true;
+                      });
+                      if(email.contains("@")==false) {
+                        setState(() {erreurEmail=" Un email  doit etre contient @" ;
+                        });
+                      }
+                    }else{ setState(() {
+                      valideEmaill=false;
+                    });}
+                    if(password=="" || password.length<8 ){
+                      setState(() {
+                        validePassword=true;
+                      });
+                      if(password.length<8) {
+                        setState(() {erreurPassword=" Il doit être composé d'au moins 8 caractères" ;
+                        });
+                      }
+
+                    }else{ setState(() {
+                      validePassword=false;
+                    });}
+                    if(!validePrenom && !validePassword && !valideEmaill && !valideMatricule && !valideTele && !valideNom && !valideAdress){
+                      Navigator.push(context,  MaterialPageRoute(builder: (context) => const Control()));
+                    }
+                  },
                   child: const Text(
                     " valider",
                     style: TextStyle(

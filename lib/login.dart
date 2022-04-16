@@ -1,4 +1,5 @@
 
+import 'package:easy_park/Abonnement.dart';
 import 'package:easy_park/s\'inscrire.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -140,7 +141,7 @@ class _AcceuilState extends State<Acceuil> {
         children: [
           TextButton(
             onPressed: () {
-              Navigator.push(context, MaterialPageRoute(builder:(context)=>const Inscription()));
+              Navigator.push(context, MaterialPageRoute(builder:(context)=>const Abonnement()));
             },
             child: const Text(
               'S\'inscrire',
