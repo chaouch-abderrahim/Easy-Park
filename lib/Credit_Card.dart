@@ -8,14 +8,19 @@ import 'package:flutter_credit_card/flutter_credit_card.dart';
 
 
 class Credit_Card extends StatefulWidget {
-  int a=0;
-  Credit_Card(item){
-    this.a=item;
+  int dure=0;
+  int prix =0;
+  Credit_Card(List<int> l) {
+
+
+    this.prix=l[0];
+    this.dure= l[1];
+
   }
 
   @override
   State<StatefulWidget> createState() {
-    return Credit_CardState( a);
+    return Credit_CardState( dure,prix.toString());
   }
 }
 
@@ -29,14 +34,16 @@ class Credit_CardState extends State<Credit_Card> {
   bool useBackgroundImage = false;
   OutlineInputBorder? border;
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
-int b=0;
-  Credit_CardState(int a){
-    b=a;
+int dure=0;
+String prix="";
+  Credit_CardState(int a, String prix){
+    this.dure=a;
+    this.prix=prix;
   }
 
   @override
   void initState() {
-    print(b);
+
     border = OutlineInputBorder(
       borderSide: BorderSide(
         color: Colors.grey.withOpacity(0.7),
@@ -60,7 +67,7 @@ int b=0;
           decoration: BoxDecoration(
             image: !useBackgroundImage
                 ? const DecorationImage(
-              image: ExactAssetImage('assets/bg.png'),
+              image: ExactAssetImage('Images/1.jpg'),
               fit: BoxFit.fill,
             )
                 : null,
@@ -83,16 +90,16 @@ int b=0;
                   obscureCardNumber: true,
                   obscureCardCvv: true,
                   isHolderNameVisible: true,
-                  cardBgColor: Colors.red,
+                  cardBgColor: Colors.deepOrange,
                   backgroundImage:
-                  useBackgroundImage ? 'assets/card_bg.png' : null,
+                  useBackgroundImage ? 'Images/card.png' : null,
                   isSwipeGestureEnabled: true,
-                  onCreditCardWidgetChange: (CreditCardBrand creditCardBrand) {},
+                 onCreditCardWidgetChange: (CreditCardBrand creditCardBrand) {},
                   customCardTypeIcons: <CustomCardTypeIcon>[
                     CustomCardTypeIcon(
                       cardType: CardType.mastercard,
                       cardImage: Image.asset(
-                        'assets/mastercard.png',
+                        'Images/mastercard.png',
                         height: 48,
                         width: 48,
                       ),
@@ -219,7 +226,7 @@ int b=0;
                           onPressed: () {
                             if (formKey.currentState!.validate()) {
                               print('valid!');
-                              Navigator.push((context), MaterialPageRoute(builder: (context)=>Inscription(b)));
+                              Navigator.push((context), MaterialPageRoute(builder: (context)=>Inscription(dure,prix)));
                             } else {
                               print('invalid!');
                             }

@@ -1,22 +1,29 @@
+import 'dart:async';
 import 'dart:io';
+import 'package:awesome_dialog/awesome_dialog.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
+import 'package:firebase_storage/firebase_storage.dart';
 import 'Controleur.dart';
+//import 'package:path/path.dart' as p;
 
 class Inscription extends StatefulWidget {
-int b=0;
-   Inscription(int b, {Key? key}) : super(key: key){
-     this.b=b;
-   }
-
+  int dure = 0;
+  String prix="";
+  Inscription(int b, String prix, {Key? key}) : super(key: key) {
+    this.dure = b;
+    this.prix=prix;
+  }
 
   @override
-  State<Inscription> createState() => _InscriptionState(b);
+  State<Inscription> createState() => _InscriptionState(dure,prix);
 }
 
 class _InscriptionState extends State<Inscription> {
+  UserCredential? userCredential;
   final controller = TextEditingController();
   final controllerP = TextEditingController();
   final controllerT = TextEditingController();
@@ -24,48 +31,84 @@ class _InscriptionState extends State<Inscription> {
   final controllerE = TextEditingController();
   final controllerPwd = TextEditingController();
   final controllerA = TextEditingController();
-  String erreurEmail="le champs est obligatoire",erreurNom="le champs est obligatoire",erreurPrenom="le champs est obligatoire",erreurMatricule="le champs est obligatoire",erreurAdress="le champs est obligatoire",erreurPassword="le champs est obligatoire";
- String erreurTel="le champs est obligatoire";
-  String nom = "",prenom="",tele="",email="",password="",matricule="",adress="";
-  bool valideNom = false,validePrenom=false,valideTele=false,valideAdress=false,valideEmaill=false,valideMatricule=false,validePassword=false,visible=false;
-  File?  img ;
+  String erreurAuth = "";
+  String erreurEmail = "le champs est obligatoire",
+      erreurNom = "le champs est obligatoire",
+      erreurPrenom = "le champs est obligatoire",
+      erreurMatricule = "le champs est obligatoire",
+      erreurAdress = "le champs est obligatoire",
+      erreurPassword = "le champs est obligatoire";
+  String erreurTel = "le champs est obligatoire";
+  String nom = "",
+      prenom = "",
+      tele = "",
+      email = "",
+      password = "",
+      matricule = "",
+      adress = "";
+  bool valideNom = false,
+      validePrenom = false,
+      valideTele = false,
+      valideAdress = false,
+      valideEmaill = false,
+      valideMatricule = false,
+      validePassword = false,
+      visible = false;
+  String url="";
+  File? img;
   final ImagePicker _picker = ImagePicker();
-int a=0;
-  _InscriptionState(int b){
-    a=b;
+  int dure = 0;
+  String prix="";
+  _InscriptionState(int b, String prix) {
+    dure = b;
+    this.prix=prix;
   }
 
-  Future getImageCamera()async {
-    final  photo = await _picker.pickImage(source: (ImageSource.camera));
-    if(photo!=null) {
-
-      setState(()  {
-      img= File(photo.path);
-      print("ok");
-    });
-    }
-    else{
-      print("non image");
-    }
-
-  }
-  Future getImageGallery()async {
-    final  photo = await _picker.pickImage(source: (ImageSource.gallery));
-    if(photo!=null) {
-      setState(()  {
-        img= File(photo.path);
+  Future getImageCamera() async {
+    final photo = await _picker.pickImage(source: (ImageSource.camera));
+    if (photo != null) {
+      setState(() {
+        img = File(photo.path);
         print("ok");
       });
-    }
-    else{
+    } else {
       print("non image");
     }
-
   }
+
+  Future getImageGallery() async {
+    final photo = await _picker.pickImage(source: (ImageSource.gallery));
+    if (photo != null) {
+      setState(() {
+        img = File(photo.path);
+        print("ok");
+      });
+    } else {
+      print("non image");
+    }
+  }
+
+  Future putImage() async {
+    //String name = p.basename(img!.path);
+    final storageRef = FirebaseStorage.instance.ref();
+    final now = DateTime.now();
+// Create a reference to "mountains.jpg"
+    final mountainsRef = storageRef.child("image/$nom"+now.toString());
+    try {
+      await mountainsRef.putFile(img!);
+    } on FirebaseException catch (e) {
+      print(e.message.toString());
+    }
+    setState(() async{
+      url = await mountainsRef.getDownloadURL();
+    });
+
+    print (url);
+  }
+
   @override
   void initState() {
-    print(a);
-    print("$a ddf");
+
     super.initState();
     controller.addListener(() => setState(() {}));
     controllerP.addListener(() => setState(() {}));
@@ -74,6 +117,12 @@ int a=0;
     controllerT.addListener(() => setState(() {}));
     controllerPwd.addListener(() => setState(() {}));
     controllerE.addListener(() => setState(() {}));
+  }
+  @override
+  void dispose() {
+    // TODO: implement dispose
+
+    super.dispose();
   }
 
   @override
@@ -88,111 +137,134 @@ int a=0;
         ),
         body: ListView(
           children: [
-            const SizedBox(height: 40,),
+            const SizedBox(
+              height: 40,
+            ),
             Center(
-              child: Stack(
-
-                  children: [
-                    Container(
-                   child: CircleAvatar(
-                      backgroundColor: Colors.deepOrange,
-
-                      radius: 70,
-                      child: CircleAvatar(
-                       backgroundImage: img != null? FileImage(img!) : null,
-                        radius: 64,
-                        child: img == null?  const Image(image:  AssetImage("Images/man.png"),):null,
-
-                      )
-                    )
-                    ),
-                    Positioned(
-                        top:90,
-                        left:70,
-                        child:RawMaterialButton(
-                      elevation:10,
-                      fillColor :Colors.deepOrange,
+              child: Stack(children: [
+                Container(
+                    child: CircleAvatar(
+                        backgroundColor: Colors.deepOrange,
+                        radius: 70,
+                        child: CircleAvatar(
+                          backgroundImage: img != null ? FileImage(img!) : null,
+                          radius: 64,
+                          child: img == null
+                              ? const Image(
+                                  image: AssetImage("Images/man.png"),
+                                )
+                              : null,
+                        ))),
+                Positioned(
+                    top: 90,
+                    left: 70,
+                    child: RawMaterialButton(
+                      elevation: 10,
+                      fillColor: Colors.deepOrange,
                       child: const Icon(Icons.add_a_photo),
                       onPressed: () {
-                        showDialog(context: context, builder: (BuildContext context){
-                          return  AlertDialog(
-                            title:const Text("Selection un option :",style:  TextStyle(fontWeight: FontWeight.w600,color:Colors.deepOrange),) ,
-                             content: SingleChildScrollView(
-                               child: ListBody(
-                                  children: [
-                          InkWell(
-                            onTap: () {
-                              getImageCamera();
-
-                            },
-                            splashColor: Colors.orange,
-                            child: Row(children: const [
-                              Padding(
-                                padding: EdgeInsets.all(8.0),
-                                child: Icon(Icons.camera,color: Colors.deepOrange,),
-                              ),
-                              Text("Camera",style: TextStyle(fontWeight: FontWeight.w500,fontFamily: "PT")),
-                            ],),
-
-                            ),
+                        showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return AlertDialog(
+                                title: const Text(
+                                  "Selection un option :",
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.w600,
+                                      color: Colors.deepOrange),
+                                ),
+                                content: SingleChildScrollView(
+                                  child: ListBody(children: [
                                     InkWell(
-                                      onTap: (){
-                                        getImageGallery();
+                                      onTap: () {
+                                        getImageCamera();
                                       },
                                       splashColor: Colors.orange,
-                                      child: Row(children: const [
-                                        Padding(
-                                          padding: EdgeInsets.all(8.0),
-                                          child: Icon(Icons.image,color:Colors.deepOrange),
-                                        ),
-                                        Text("Gallery",style: TextStyle(fontWeight: FontWeight.w500,fontFamily: "PT")),
-
-                                      ],),
-
-                                    ),
-                                    InkWell(
-                                        onTap:(){
-                                          setState(() {
-                                            img=null;
-                                          });
-                                        },
-                                        splashColor: Colors.deepOrange,
-                                        child :Row(
-                                          children: const [
-                                            Padding(
-                                              padding: EdgeInsets.all(8.0),
-                                              child: Icon(Icons.remove_circle,color:Colors.deepOrange),
-                                            ),
-                                            Text("Supprimer",style: TextStyle(fontWeight: FontWeight.w500,fontFamily: "PT",color: Colors.red,)),
-
-                                          ],
-                                        )
-                                    ),
-                                    InkWell(
-                                      onTap:(){
-                                        Navigator.pop(context, true);
-                                      },
-                                      splashColor: Colors.deepOrange,
-                                      child :Row(
+                                      child: Row(
                                         children: const [
                                           Padding(
                                             padding: EdgeInsets.all(8.0),
-                                            child: Icon(Icons.close,color:Colors.red),
+                                            child: Icon(
+                                              Icons.camera,
+                                              color: Colors.deepOrange,
+                                            ),
                                           ),
-                                          Text("Fermer",style: TextStyle(fontWeight: FontWeight.w500,fontFamily: "PT",color: Colors.red,)),
-
+                                          Text("Camera",
+                                              style: TextStyle(
+                                                  fontWeight: FontWeight.w500,
+                                                  fontFamily: "PT")),
                                         ],
-                                      )
-                                    )
-                                 ]),
-                             ),
-                          );
-                        });
+                                      ),
+                                    ),
+                                    InkWell(
+                                      onTap: () {
+                                        getImageGallery();
+                                      },
+                                      splashColor: Colors.orange,
+                                      child: Row(
+                                        children: const [
+                                          Padding(
+                                            padding: EdgeInsets.all(8.0),
+                                            child: Icon(Icons.image,
+                                                color: Colors.deepOrange),
+                                          ),
+                                          Text("Gallery",
+                                              style: TextStyle(
+                                                  fontWeight: FontWeight.w500,
+                                                  fontFamily: "PT")),
+                                        ],
+                                      ),
+                                    ),
+                                    InkWell(
+                                        onTap: () {
+                                          setState(() {
+                                            img = null;
+                                          });
+                                        },
+                                        splashColor: Colors.deepOrange,
+                                        child: Row(
+                                          children: const [
+                                            Padding(
+                                              padding: EdgeInsets.all(8.0),
+                                              child: Icon(Icons.remove_circle,
+                                                  color: Colors.deepOrange),
+                                            ),
+                                            Text("Supprimer",
+                                                style: TextStyle(
+                                                  fontWeight: FontWeight.w500,
+                                                  fontFamily: "PT",
+                                                  color: Colors.red,
+                                                )),
+                                          ],
+                                        )),
+                                    InkWell(
+                                        onTap: () {
+                                          Navigator.pop(context, true);
+                                        },
+                                        splashColor: Colors.deepOrange,
+                                        child: Row(
+                                          children: const [
+                                            Padding(
+                                              padding: EdgeInsets.all(8.0),
+                                              child: Icon(Icons.close,
+                                                  color: Colors.red),
+                                            ),
+                                            Text("Fermer",
+                                                style: TextStyle(
+                                                  fontWeight: FontWeight.w500,
+                                                  fontFamily: "PT",
+                                                  color: Colors.red,
+                                                )),
+                                          ],
+                                        ))
+                                  ]),
+                                ),
+                              );
+                            });
                       },
-                          shape: const CircleBorder(),
-                          padding: const EdgeInsets.all(10),
-                    ) )
-
+                      shape: const CircleBorder(),
+                      padding: const EdgeInsets.all(10),
+                    ))
               ]),
             ),
             Column(children: [
@@ -333,7 +405,7 @@ int a=0;
             Column(children: [
               Padding(
                 padding:
-                const EdgeInsets.symmetric(horizontal: 20.0, vertical: 20),
+                    const EdgeInsets.symmetric(horizontal: 20.0, vertical: 20),
                 child: TextField(
                   onChanged: (value) {
                     setState(() {
@@ -348,10 +420,10 @@ int a=0;
                     fillColor: Colors.amberAccent,
                     enabledBorder: const OutlineInputBorder(
                         borderSide:
-                        BorderSide(color: Colors.orangeAccent, width: 2.0)),
+                            BorderSide(color: Colors.orangeAccent, width: 2.0)),
                     focusedBorder: const OutlineInputBorder(
                         borderSide:
-                        BorderSide(color: Colors.orange, width: 2.0)),
+                            BorderSide(color: Colors.orange, width: 2.0)),
                     labelText: "Adresse",
                     labelStyle: const TextStyle(color: Colors.black),
                     prefixIcon: const Icon(
@@ -360,16 +432,16 @@ int a=0;
                     ),
                     suffixIcon: controllerA.text.isEmpty
                         ? Container(
-                      width: 0,
-                    )
+                            width: 0,
+                          )
                         : IconButton(
-                        onPressed: () {
-                          controllerA.clear();
-                        },
-                        icon: const Icon(
-                          Icons.close,
-                          color: Colors.pink,
-                        )),
+                            onPressed: () {
+                              controllerA.clear();
+                            },
+                            icon: const Icon(
+                              Icons.close,
+                              color: Colors.pink,
+                            )),
                     errorText: valideAdress ? erreurAdress : null,
                   ),
                 ),
@@ -378,7 +450,7 @@ int a=0;
             Column(children: [
               Padding(
                 padding:
-                const EdgeInsets.symmetric(horizontal: 20.0, vertical: 20),
+                    const EdgeInsets.symmetric(horizontal: 20.0, vertical: 20),
                 child: TextField(
                   onChanged: (value) {
                     setState(() {
@@ -393,10 +465,10 @@ int a=0;
                     fillColor: Colors.amberAccent,
                     enabledBorder: const OutlineInputBorder(
                         borderSide:
-                        BorderSide(color: Colors.orangeAccent, width: 2.0)),
+                            BorderSide(color: Colors.orangeAccent, width: 2.0)),
                     focusedBorder: const OutlineInputBorder(
                         borderSide:
-                        BorderSide(color: Colors.orange, width: 2.0)),
+                            BorderSide(color: Colors.orange, width: 2.0)),
                     labelText: "Matricule",
                     labelStyle: const TextStyle(color: Colors.black),
                     prefixIcon: const Icon(
@@ -405,17 +477,17 @@ int a=0;
                     ),
                     suffixIcon: controllerM.text.isEmpty
                         ? Container(
-                      width: 0,
-                    )
+                            width: 0,
+                          )
                         : IconButton(
-                        onPressed: () {
-                          controllerM.clear();
-                        },
-                        icon: const Icon(
-                          Icons.close,
-                          color: Colors.deepOrange,
-                        )),
-                    errorText: valideMatricule ? erreurMatricule: null,
+                            onPressed: () {
+                              controllerM.clear();
+                            },
+                            icon: const Icon(
+                              Icons.close,
+                              color: Colors.deepOrange,
+                            )),
+                    errorText: valideMatricule ? erreurMatricule : null,
                   ),
                 ),
               )
@@ -423,7 +495,7 @@ int a=0;
             Column(children: [
               Padding(
                 padding:
-                const EdgeInsets.symmetric(horizontal: 20.0, vertical: 20),
+                    const EdgeInsets.symmetric(horizontal: 20.0, vertical: 20),
                 child: TextField(
                   onChanged: (value) {
                     setState(() {
@@ -438,10 +510,10 @@ int a=0;
                     fillColor: Colors.amberAccent,
                     enabledBorder: const OutlineInputBorder(
                         borderSide:
-                        BorderSide(color: Colors.orangeAccent, width: 2.0)),
+                            BorderSide(color: Colors.orangeAccent, width: 2.0)),
                     focusedBorder: const OutlineInputBorder(
                         borderSide:
-                        BorderSide(color: Colors.orange, width: 2.0)),
+                            BorderSide(color: Colors.orange, width: 2.0)),
                     labelText: "Email",
                     labelStyle: const TextStyle(color: Colors.black),
                     prefixIcon: const Icon(
@@ -450,16 +522,16 @@ int a=0;
                     ),
                     suffixIcon: controllerE.text.isEmpty
                         ? Container(
-                      width: 0,
-                    )
+                            width: 0,
+                          )
                         : IconButton(
-                        onPressed: () {
-                          controllerE.clear();
-                        },
-                        icon: const Icon(
-                          Icons.close,
-                          color: Colors.deepOrange,
-                        )),
+                            onPressed: () {
+                              controllerE.clear();
+                            },
+                            icon: const Icon(
+                              Icons.close,
+                              color: Colors.deepOrange,
+                            )),
                     errorText: valideEmaill ? erreurEmail : null,
                   ),
                 ),
@@ -468,7 +540,7 @@ int a=0;
             Column(children: [
               Padding(
                 padding:
-                const EdgeInsets.symmetric(horizontal: 20.0, vertical: 20),
+                    const EdgeInsets.symmetric(horizontal: 20.0, vertical: 20),
                 child: TextField(
                   onChanged: (value) {
                     setState(() {
@@ -483,10 +555,10 @@ int a=0;
                     fillColor: Colors.amberAccent,
                     enabledBorder: const OutlineInputBorder(
                         borderSide:
-                        BorderSide(color: Colors.orangeAccent, width: 2.0)),
+                            BorderSide(color: Colors.orangeAccent, width: 2.0)),
                     focusedBorder: const OutlineInputBorder(
                         borderSide:
-                        BorderSide(color: Colors.orange, width: 2.0)),
+                            BorderSide(color: Colors.orange, width: 2.0)),
                     labelText: "Password",
                     labelStyle: const TextStyle(color: Colors.black),
                     prefixIcon: const Icon(
@@ -495,25 +567,25 @@ int a=0;
                     ),
                     suffixIcon: visible
                         ? IconButton(
-                    onPressed: () {
-  setState(() {
-    visible=false;
-  });
-    },
-    icon: const Icon(
-    Icons.visibility_off_outlined,
-    color: Colors.deepOrange,
-    ))
+                            onPressed: () {
+                              setState(() {
+                                visible = false;
+                              });
+                            },
+                            icon: const Icon(
+                              Icons.visibility_off_outlined,
+                              color: Colors.deepOrange,
+                            ))
                         : IconButton(
-                        onPressed: () {
-                          setState(() {
-                            visible=true;
-                          });
-                        },
-                        icon: const Icon(
-                          Icons.visibility,
-                          color: Colors.deepOrange,
-                        )),
+                            onPressed: () {
+                              setState(() {
+                                visible = true;
+                              });
+                            },
+                            icon: const Icon(
+                              Icons.visibility,
+                              color: Colors.deepOrange,
+                            )),
                     errorText: validePassword ? erreurPassword : null,
                   ),
                 ),
@@ -521,67 +593,159 @@ int a=0;
             ]),
             Row(mainAxisAlignment: MainAxisAlignment.center, children: [
               ElevatedButton(
-                  onPressed: () {
-                    if(nom==""){
+                  onPressed: () async {
+                    if (nom == "") {
                       setState(() {
-                        valideNom=true;
+                        valideNom = true;
                       });
-                    }else{ setState(() {
-                      valideNom=false;
-                    });}
-                    if(prenom==""){
+                    } else {
                       setState(() {
-                        validePrenom=true;
+                        valideNom = false;
                       });
-                    }else{ setState(() {
-                      validePrenom=false;
-                    });}
-                    if(tele==""){
+                    }
+                    if (prenom == "") {
                       setState(() {
-                        valideTele=true;
+                        validePrenom = true;
                       });
-                    }else{ setState(() {
-                      valideTele=false;
-                    });}
-                    if(adress==""){
+                    } else {
                       setState(() {
-                        valideAdress=true;
+                        validePrenom = false;
                       });
-                    }else{ setState(() {
-                      valideAdress=false;
-                    });}
-                    if(matricule==""){
+                    }
+                    if (tele == "") {
                       setState(() {
-                        valideMatricule=true;
+                        valideTele = true;
                       });
-                    }else{ setState(() {
-                      valideMatricule=false;
-                    });}
-                    if(email=="" || email.contains("@")==false){
+                    } else {
                       setState(() {
-                        valideEmaill=true;
+                        valideTele = false;
                       });
-                      if(email.contains("@")==false) {
-                        setState(() {erreurEmail=" Un email  doit etre contient @" ;
+                    }
+                    if (adress == "") {
+                      setState(() {
+                        valideAdress = true;
+                      });
+                    } else {
+                      setState(() {
+                        valideAdress = false;
+                      });
+                    }
+                    if (matricule == "") {
+                      setState(() {
+                        valideMatricule = true;
+                      });
+                    } else {
+                      setState(() {
+                        valideMatricule = false;
+                      });
+                    }
+                    if (email == "" || email.contains("@") == false) {
+                      setState(() {
+                        valideEmaill = true;
+                      });
+                      if (email.contains("@") == false) {
+                        setState(() {
+                          erreurEmail = " Un email  doit etre contient @";
                         });
                       }
-                    }else{ setState(() {
-                      valideEmaill=false;
-                    });}
-                    if(password=="" || password.length<8 ){
+                    } else {
                       setState(() {
-                        validePassword=true;
+                        valideEmaill = false;
                       });
-                      if(password.length<8) {
-                        setState(() {erreurPassword=" Il doit être composé d'au moins 8 caractères" ;
+                    }
+                    if (password == "" || password.length < 8) {
+                      setState(() {
+                        validePassword = true;
+                      });
+                      if (password.length < 8) {
+                        setState(() {
+                          erreurPassword =
+                              " Il doit être composé d'au moins 8 caractères";
                         });
                       }
+                    } else {
+                      setState(() {
+                        validePassword = false;
+                      });
+                    }
 
-                    }else{ setState(() {
-                      validePassword=false;
-                    });}
-                    if(!validePrenom && !validePassword && !valideEmaill && !valideMatricule && !valideTele && !valideNom && !valideAdress){
-                      Navigator.push(context,  MaterialPageRoute(builder: (context) => const Control()));
+                    if (!validePrenom &&
+                        !validePassword &&
+                        !valideEmaill &&
+                        !valideMatricule &&
+                        !valideTele &&
+                        !valideNom &&
+                        !valideAdress) {
+                      if (img != null) {
+                        putImage();
+                        print("image existe");
+                      } else {
+                        print("image n'exeiste ");
+                      }
+                      final now = DateTime.now();
+                    await   FirebaseFirestore.instance.collection("client").add({
+                      "Abonnement":{
+                     " Debut":now
+                      ,
+                      "Fin":now.add(Duration(days: dure)),
+                      "Prix":prix},
+                      "Adress":adress,
+                     " Email":email,
+                     "Matricule":matricule,
+                      "Nom":nom,
+                      "Prenom":prenom,
+                      "Tele":tele,
+                      "Urlimage":url
+
+                      });
+                      try {
+                        userCredential = await FirebaseAuth.instance
+                            .createUserWithEmailAndPassword(
+                          email: email,
+                          password: password,
+                        );
+                      /*checkEmail(userCredential!.user);*/
+
+
+                      } on FirebaseAuthException catch (e) {
+                        if (e.code == 'weak-password') {
+                          setState(() {
+                            erreurAuth = "eak-password";
+                          });
+                          print('The password provided is too weak.');
+                        } else if (e.code == 'email-already-in-use') {
+                          setState(() {
+                            erreurAuth =
+                                " Le compte existe déjà pour cet e-mail";
+                          });
+                          print('The account already exists for that email.');
+                        }
+                      } catch (e) {
+                        setState(() {
+                          erreurAuth = " operation-not-allowed";
+                        });
+                        print(e);
+                      }
+                      if (erreurAuth == "") {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const Control()));
+                      } else {
+                        AwesomeDialog(
+                          context: context,
+                          keyboardAware: true,
+                          dismissOnBackKeyPress: false,
+                          dialogType: DialogType.WARNING,
+                          animType: AnimType.BOTTOMSLIDE,
+                          btnCancelText: "Annuler",
+                          btnOkText: "ok",
+                          title: erreurAuth,
+                          // padding: const EdgeInsets.all(5.0),
+                          btnCancelOnPress: () {},
+                          btnOkOnPress: () {},
+                        ).show();
+                      }
                     }
                   },
                   child: const Text(
@@ -595,7 +759,8 @@ int a=0;
                   style: ButtonStyle(
                       padding: MaterialStateProperty.all<EdgeInsets>(
                           EdgeInsets.all(10)),
-                      backgroundColor: MaterialStateProperty.all(Colors.red[900]),
+                      backgroundColor:
+                          MaterialStateProperty.all(Colors.red[900]),
                       shadowColor: MaterialStateProperty.all(Colors.black),
                       shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                           RoundedRectangleBorder(
@@ -606,10 +771,33 @@ int a=0;
                         borderRadius: BorderRadius.circular(15),
                       ))))
             ]),
-            const SizedBox(height: 200,)
+            const SizedBox(
+              height: 200,
+            )
           ],
         ),
       ),
     );
   }
+/*  Future <void>checkEmail(use) async{
+    use?.sendEmailVerification();
+
+    Timer.periodic(const Duration(seconds: 2), (timer)async  {
+      await use.reload();
+      if(use?.emailVerified==true){
+        setState(() {
+          erreurAuth="";
+        });
+        timer.cancel();
+        print("bien verifier");
+      }
+      else{
+        print(use?.emailVerified.toString());
+      }
+
+
+
+    });
+
+  }*/
 }

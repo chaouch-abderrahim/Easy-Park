@@ -53,8 +53,16 @@ class _AbonnementState extends State<Abonnement> {
                                backgroundColor: MaterialStateProperty.all( Colors.black),
                              ),
                              onPressed: () {
+                               int prix =item["Prix"];
+                               int d =item["Duration"];
+                              List<int> l= [prix,d];
+
+
+                               final Map <String ,dynamic> a={"prix":item["Prix"],"dure":item["Duration"]};
                                Navigator.push(
-                                   context, MaterialPageRoute(builder: (context) =>  Credit_Card(item["Duration"])));
+                                   context, MaterialPageRoute(builder: (context) =>  Credit_Card( l),
+                               )
+                               );
                              },
                              child:  Text(item["Prix"].toString()+' DH Pour '+item["Duration"].toString()+'jours de Parking',style: TextStyle(fontSize: 19,fontWeight: FontWeight.w500,),)
                              ,
