@@ -1,4 +1,5 @@
 import 'dart:async';
+
 import 'dart:io';
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -7,7 +8,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'Controleur.dart';
+import 'Client/Client.dart';
 //import 'package:path/path.dart' as p;
 
 class Inscription extends StatefulWidget {
@@ -16,6 +17,9 @@ class Inscription extends StatefulWidget {
   Inscription(int b, String prix, {Key? key}) : super(key: key) {
     this.dure = b;
     this.prix=prix;
+    final now = DateTime.now();
+    print("now:"+now.toString());
+    print(" $dure after :"+now.add(Duration(days:dure)).toString());
   }
 
   @override
@@ -23,7 +27,7 @@ class Inscription extends StatefulWidget {
 }
 
 class _InscriptionState extends State<Inscription> {
-  UserCredential? userCredential;
+ bool islaoding=false;
   final controller = TextEditingController();
   final controllerP = TextEditingController();
   final controllerT = TextEditingController();
@@ -54,7 +58,9 @@ class _InscriptionState extends State<Inscription> {
       valideMatricule = false,
       validePassword = false,
       visible = false;
-  String url="";
+  String url="",UrlImage="";
+
+  Timer? _timer;
   File? img;
   final ImagePicker _picker = ImagePicker();
   int dure = 0;
@@ -62,6 +68,7 @@ class _InscriptionState extends State<Inscription> {
   _InscriptionState(int b, String prix) {
     dure = b;
     this.prix=prix;
+
   }
 
   Future getImageCamera() async {
@@ -99,16 +106,21 @@ class _InscriptionState extends State<Inscription> {
     } on FirebaseException catch (e) {
       print(e.message.toString());
     }
-    setState(() async{
+
       url = await mountainsRef.getDownloadURL();
-    });
+ setState(() {
+   UrlImage=url;
+   print("$UrlImage");
+ });
 
     print (url);
   }
 
   @override
   void initState() {
-
+    setState(() {
+      islaoding=false;
+    });
     super.initState();
     controller.addListener(() => setState(() {}));
     controllerP.addListener(() => setState(() {}));
@@ -121,7 +133,10 @@ class _InscriptionState extends State<Inscription> {
   @override
   void dispose() {
     // TODO: implement dispose
-
+//_timer!.cancel();
+setState(() {
+  islaoding=false;
+});
     super.dispose();
   }
 
@@ -302,6 +317,7 @@ class _InscriptionState extends State<Inscription> {
                         : IconButton(
                             onPressed: () {
                               controller.clear();
+                              nom="";
                             },
                             icon: const Icon(
                               Icons.close,
@@ -347,6 +363,7 @@ class _InscriptionState extends State<Inscription> {
                         : IconButton(
                             onPressed: () {
                               controllerP.clear();
+                              prenom="";
                             },
                             icon: const Icon(
                               Icons.close,
@@ -392,6 +409,7 @@ class _InscriptionState extends State<Inscription> {
                         : IconButton(
                             onPressed: () {
                               controllerT.clear();
+                              tele="";
                             },
                             icon: const Icon(
                               Icons.close,
@@ -437,6 +455,7 @@ class _InscriptionState extends State<Inscription> {
                         : IconButton(
                             onPressed: () {
                               controllerA.clear();
+                              adress="";
                             },
                             icon: const Icon(
                               Icons.close,
@@ -482,6 +501,7 @@ class _InscriptionState extends State<Inscription> {
                         : IconButton(
                             onPressed: () {
                               controllerM.clear();
+                              matricule="";
                             },
                             icon: const Icon(
                               Icons.close,
@@ -527,6 +547,7 @@ class _InscriptionState extends State<Inscription> {
                         : IconButton(
                             onPressed: () {
                               controllerE.clear();
+                              email="";
                             },
                             icon: const Icon(
                               Icons.close,
@@ -593,7 +614,11 @@ class _InscriptionState extends State<Inscription> {
             ]),
             Row(mainAxisAlignment: MainAxisAlignment.center, children: [
               ElevatedButton(
-                  onPressed: () async {
+                  onPressed:islaoding ? null: () async {
+                    setState(() {
+                      islaoding=true;
+                    });
+
                     if (nom == "") {
                       setState(() {
                         valideNom = true;
@@ -604,10 +629,12 @@ class _InscriptionState extends State<Inscription> {
                       });
                     }
                     if (prenom == "") {
+                      print(prenom+"ddddd");
                       setState(() {
                         validePrenom = true;
                       });
                     } else {
+                      print(prenom);
                       setState(() {
                         validePrenom = false;
                       });
@@ -676,37 +703,38 @@ class _InscriptionState extends State<Inscription> {
                         !valideTele &&
                         !valideNom &&
                         !valideAdress) {
-                      if (img != null) {
-                        putImage();
-                        print("image existe");
-                      } else {
-                        print("image n'exeiste ");
-                      }
-                      final now = DateTime.now();
-                    await   FirebaseFirestore.instance.collection("client").add({
-                      "Abonnement":{
-                     " Debut":now
-                      ,
-                      "Fin":now.add(Duration(days: dure)),
-                      "Prix":prix},
-                      "Adress":adress,
-                     " Email":email,
-                     "Matricule":matricule,
-                      "Nom":nom,
-                      "Prenom":prenom,
-                      "Tele":tele,
-                      "Urlimage":url
 
-                      });
+
                       try {
-                        userCredential = await FirebaseAuth.instance
+                        UserCredential  userCredential = await FirebaseAuth.instance
                             .createUserWithEmailAndPassword(
                           email: email,
                           password: password,
                         );
-                      /*checkEmail(userCredential!.user);*/
+                        setState(() {
+                          erreurAuth="";
+                        });
+                       /*User? user=  FirebaseAuth.instance.currentUser;
+                        if(user?.emailVerified==false){
+                          setState(() {
+                            erreurAuth="virfier votre email";
+                          });
+                          user?.sendEmailVerification();
+                          _timer=Timer.periodic(const Duration(seconds: 2), (timer) async {
 
+                                await  user!.reload();
+                            if (user.emailVerified) {
+                              setState(() {
+                                erreurAuth="";
+                              });
+                              print('Cancel timer');
+                              timer.cancel();
+                            }
+                          });
 
+                        }*/
+                       print(FirebaseAuth.instance.currentUser?.email.toString()) ;
+                      //checkEmail(userCredential.user as User );
                       } on FirebaseAuthException catch (e) {
                         if (e.code == 'weak-password') {
                           setState(() {
@@ -726,12 +754,66 @@ class _InscriptionState extends State<Inscription> {
                         });
                         print(e);
                       }
+                      FirebaseFirestore.instance
+                          .collection('client')
+                          .get()
+                          .then((QuerySnapshot querySnapshot) {
+                        querySnapshot.docs.forEach((doc) {
+                          if( doc["Matricule"]==matricule){
+                            erreurAuth="cette Matricule existe deja ";
+                          }
+                        });
+                      });
+
                       if (erreurAuth == "") {
+                        if (img != null) {
+                          final storageRef = FirebaseStorage.instance.ref();
+                          final now = DateTime.now();
+// Create a reference to "mountains.jpg"
+                          final mountainsRef = storageRef.child("image/$nom"+now.toString());
+                          try {
+                            await mountainsRef.putFile(img!);
+                          } on FirebaseException catch (e) {
+                            print(e.message.toString());
+                          }
+
+                          url = await mountainsRef.getDownloadURL();
+                          setState(() {
+                            UrlImage=url;
+                            print("$UrlImage");
+                          });
+
+                          print (url);
+
+                        }
+
+                        final now = DateTime.now();
+                        await   FirebaseFirestore.instance.collection("client").add({
+                          "Abonnement":{
+                            " Debut":now
+                            ,
+                            "Fin":now.add(Duration(days: dure)),
+                            "Prix":prix+"DH"},
+                          "Adress":adress,
+                          " Email":email,
+                          "Matricule":matricule,
+                          "Nom":nom,
+                          "Prenom":prenom,
+                          "Tele":tele,
+                          "Urlimage":UrlImage,
+
+                        });
+                        setState(() {
+                          islaoding=false;
+                        });
                         Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => const Control()));
+                                builder: (context) => const Client()));
                       } else {
+                        setState(() {
+                          islaoding=false;
+                        });
                         AwesomeDialog(
                           context: context,
                           keyboardAware: true,
@@ -748,7 +830,7 @@ class _InscriptionState extends State<Inscription> {
                       }
                     }
                   },
-                  child: const Text(
+                  child:islaoding?const CircularProgressIndicator(semanticsLabel: "Please Waite ...",):  const Text(
                     " valider",
                     style: TextStyle(
                         fontSize: 20,
@@ -779,25 +861,50 @@ class _InscriptionState extends State<Inscription> {
       ),
     );
   }
-/*  Future <void>checkEmail(use) async{
-    use?.sendEmailVerification();
+  /*Future<void>VedifierEmail(){
 
-    Timer.periodic(const Duration(seconds: 2), (timer)async  {
+  }
+
+  Future <void>checkEmail(User use) async{
+    if(use.emailVerified==false){
+      print(  use.email);
+
+      setState(() {
+        erreurAuth = "Verfier votre Email  verified !";
+      });
+    use.sendEmailVerification();}
+    else{
+      setState(() {
+        erreurAuth = "";
+      });
+      return ;
+    }
+
+    _timer=Timer.periodic(const Duration(seconds: 2), (timer)async {
       await use.reload();
-      if(use?.emailVerified==true){
+      if (use.emailVerified == true) {
         setState(() {
-          erreurAuth="";
+          erreurAuth = "";
+          _timer?.cancel();
         });
-        timer.cancel();
+
         print("bien verifier");
+        return ;
       }
-      else{
-        print(use?.emailVerified.toString());
+      else {
+
+
+         await use.reload();
+
+
+
+        print(use.emailVerified.toString()+" "+use.email.toString()+"ddddddd");
       }
 
 
 
     });
+    return;
 
   }*/
 }

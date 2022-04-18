@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'Client/Client.dart';
 import 'login.dart';
 import 'package:firebase_core/firebase_core.dart';
 
@@ -21,7 +22,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const SplachScreen(),
+      home: const Client(),//const SplachScreen(),
     );
   }
 }

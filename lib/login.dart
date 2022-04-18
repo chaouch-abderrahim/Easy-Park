@@ -4,7 +4,7 @@ import 'package:easy_park/s\'inscrire.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
-import 'Client.dart';
+import 'Client/Client.dart';
 import 'Controleur.dart';
 
 class Acceuil extends StatefulWidget {

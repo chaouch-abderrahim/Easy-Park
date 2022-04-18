@@ -6,25 +6,27 @@ import 'package:flutter_credit_card/credit_card_form.dart';
 import 'package:flutter_credit_card/credit_card_model.dart';
 import 'package:flutter_credit_card/flutter_credit_card.dart';
 
+import 'Client.dart';
 
-class Credit_Card extends StatefulWidget {
+
+class PayNewAbonnement extends StatefulWidget {
   int dure=0;
   int prix =0;
-  Credit_Card(List<int> l) {
+  PayNewAbonnement(int d,int prix ) {
 
 
-    this.prix=l[0];
-    this.dure= l[1];
+    this.prix=prix;
+    this.dure= d;
 
   }
 
   @override
   State<StatefulWidget> createState() {
-    return Credit_CardState( dure,prix.toString());
+    return PayNewAbonnementState( dure,prix.toString());
   }
 }
 
-class Credit_CardState extends State<Credit_Card> {
+class PayNewAbonnementState extends State<PayNewAbonnement> {
   String cardNumber = '';
   String expiryDate = '';
   String cardHolderName = '';
@@ -34,9 +36,9 @@ class Credit_CardState extends State<Credit_Card> {
   bool useBackgroundImage = false;
   OutlineInputBorder? border;
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
-int dure=0;
-String prix="";
-  Credit_CardState(int a, String prix){
+  int dure=0;
+  String prix="";
+  PayNewAbonnementState(int a, String prix){
     this.dure=a;
     this.prix=prix;
 
@@ -57,8 +59,8 @@ String prix="";
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title:const Text("Payer Facture"),backgroundColor: Colors.amber,),
-      body:MaterialApp(
+      appBar: AppBar(title:const Text("Payer Abonnement"),backgroundColor: Colors.amber,),
+      body: MaterialApp(
         title: 'Flutter Credit Card View Demo',
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
@@ -67,10 +69,12 @@ String prix="";
         home: Scaffold(
           resizeToAvoidBottomInset: false,
           body: Container(
+
             decoration: BoxDecoration(
+
               image: !useBackgroundImage
                   ? const DecorationImage(
-                image: ExactAssetImage('Images/1.jpg'),
+                image: ExactAssetImage('Images/1.gif'),
                 fit: BoxFit.fill,
               )
                   : null,
@@ -93,11 +97,11 @@ String prix="";
                     obscureCardNumber: true,
                     obscureCardCvv: true,
                     isHolderNameVisible: true,
-                    cardBgColor: Colors.deepOrange,
+                    cardBgColor: Colors.blueAccent,
                     backgroundImage:
                     useBackgroundImage ? 'Images/card.png' : null,
                     isSwipeGestureEnabled: true,
-                   onCreditCardWidgetChange: (CreditCardBrand creditCardBrand) {},
+                    onCreditCardWidgetChange: (CreditCardBrand creditCardBrand) {},
                     customCardTypeIcons: <CustomCardTypeIcon>[
                       CustomCardTypeIcon(
                         cardType: CardType.mastercard,
@@ -229,7 +233,7 @@ String prix="";
                             onPressed: () {
                               if (formKey.currentState!.validate()) {
                                 print('valid!');
-                                Navigator.push((context), MaterialPageRoute(builder: (context)=>Inscription(dure,prix)));
+                                Navigator.push((context), MaterialPageRoute(builder: (context)=>const Client()));
                               } else {
                                 print('invalid!');
                               }
