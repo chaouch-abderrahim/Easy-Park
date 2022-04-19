@@ -1,4 +1,6 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_park/Client/payerFacture.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -19,8 +21,12 @@ class Client extends StatefulWidget {
 
 class _ClientState extends State<Client> {
   final _auth = FirebaseAuth.instance;
-
   late User signeUser;
+  String Debut = "", Fin = "", Prix = "";
+  String UrlImage = "";
+  String Nom = "";
+  String Matricule = "";
+  String Email = "";
   String? getcurrentuser() {
     try {
       final user = _auth.currentUser;
@@ -32,16 +38,41 @@ class _ClientState extends State<Client> {
     }
     return signeUser.email;
   }
-  String Debut="++++",Fin="+++",Prix="+++++";
-  String UrlImage = "";
-  String Nom = "Chaouch";
-  String Matricule = "123-d-2452";
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    setState(() {
+      Email = getcurrentuser()!;
+    });
+   FirebaseFirestore.instance
+        .collection('client')
+        .get().then((value) => value.docs.forEach((element) {
+          if(element.data()["Email"]==Email){
+            setState(() {
+              Nom=element.data()["Nom"];
+             Matricule= element.data()["Matricule"];
+             Prix=element.data()["Abonnement"]["Prix"];
+             Fin=element.data()["Abonnement"]["Fin"].toDate().toString().substring(0,10);
+             Debut = element.data()["Abonnement"]["Debut"].toDate().toString().substring(0,10);
+             UrlImage=element.data()["Urlimage"];
+
+            });
+          }
+
+          print(Debut);
+          print(element.data()["Matricule"]);
+
+   }));
+
+  }
+
   late String? curUser = getcurrentuser();
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-
         drawer: Drawer(
           // Add a ListView to the drawer. This ensures the user can scroll
           // through the options in the drawer if there isn't enough vertical
@@ -50,60 +81,63 @@ class _ClientState extends State<Client> {
             // Important: Remove any padding from the ListView.
             padding: EdgeInsets.zero,
             children: [
-               DrawerHeader(
-
-          padding : const EdgeInsets.fromLTRB(5.0, 5.0, 0.0, 0.0),
+              DrawerHeader(
+                padding: const EdgeInsets.fromLTRB(5.0, 5.0, 0.0, 0.0),
                 decoration: const BoxDecoration(
                   color: Colors.amber,
                 ),
                 child: Column(
                   children: [
-
                     Row(
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
-                       const SizedBox(width: 10,),
+                        const SizedBox(
+                          width: 10,
+                        ),
                         CircleAvatar(
-                          radius:45,
+                          radius: 45,
                           backgroundColor: Colors.white,
                           child: CircleAvatar(
                             radius: 40,
                             backgroundImage:
-                            UrlImage != "" ? NetworkImage(UrlImage) : null,
-                            child: const Image(
+                                UrlImage != "" ? NetworkImage(UrlImage) : null,
+                            child:UrlImage == "" ? const Image(
                               image: AssetImage("Images/man.png"),
-                            ),
+                            ):null,
                           ),
                         ),
                       ],
                     ),
-
-                  Row(
-
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: const [
-                       SizedBox(width: 10,),
-                      Text(
-                       " Nom : AAAAAAAAAAAAA",
-                       style: TextStyle(
-                           color: Colors.black,
-                           fontWeight: FontWeight.w900,
-                           fontFamily: "Nunito",
-                           fontSize: 18),
-                 ),
-                    ],
-                  ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.start,
-                      children: const [
-                        SizedBox(width: 10,),
+                      children:  [
+                        const SizedBox(
+                          width: 10,
+                        ),
                         Text(
-                          " Email :nnnnnnnnnnnnnnnnnnn",
-                          style: TextStyle(
+                          " Nom : $Nom",
+                          style: const TextStyle(
                               color: Colors.black,
                               fontWeight: FontWeight.w900,
                               fontFamily: "Nunito",
-                              fontSize: 18),
+                              fontSize: 14),
+                        ),
+                      ],
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children:  [
+                        const SizedBox(
+                          width: 10,
+                        ),
+                        Text(
+                          " Email : $Email",
+                          style: const TextStyle(
+                              color: Colors.black,
+                              fontWeight: FontWeight.w900,
+                              fontFamily: "Nunito",
+                              fontSize: 14
+                          ),
                         ),
                       ],
                     ),
@@ -111,56 +145,82 @@ class _ClientState extends State<Client> {
                 ),
               ),
               ListTile(
-                title: const Text('Mes Informations',style: TextStyle(fontSize: 20),),
+                title: const Text(
+                  'Mes Informations',
+                  style: TextStyle(fontSize: 20),
+                ),
                 onTap: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (context)=> const MesInformations()));
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const MesInformations()));
                 },
               ),
               ListTile(
-                title: const Text('Modifier Mes  Informations',style: TextStyle(fontSize: 20),),
+                title: const Text(
+                  'Modifier Mes  Informations',
+                  style: TextStyle(fontSize: 20),
+                ),
                 onTap: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (context)=> const ModifierInfos()));
-
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const ModifierInfos()));
                 },
               ),
               ListTile(
-                title: const Text('Modifier Mon abonnement ',style: TextStyle(fontSize: 20),),
+                title: const Text(
+                  'Modifier Mon abonnement ',
+                  style: TextStyle(fontSize: 20),
+                ),
                 onTap: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (context)=> const ModifierAbonnement()));
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const ModifierAbonnement()));
                 },
               ),
               ListTile(
-                title: const Text('Payer mes factures',style: TextStyle(fontSize: 20),),
+                title: const Text(
+                  'Payer mes factures',
+                  style: TextStyle(fontSize: 20),
+                ),
                 onTap: () {
-
-                  Navigator.push(context, MaterialPageRoute(builder: (context)=> PayerFacture()));
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => PayerFacture()));
                 },
               ),
-
               ListTile(
-                title: const Text('Quitter',style: TextStyle(fontSize: 20),),
+                title: const Text(
+                  'Quitter',
+                  style: TextStyle(fontSize: 20),
+                ),
                 onTap: () async {
                   // Update the state of the app
                   // ...
                   // Then close the drawer
                   await FirebaseAuth.instance.signOut();
-                  Navigator.push(context, MaterialPageRoute(builder: (context)=> const Acceuil()));
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => const Acceuil()));
                 },
               ),
               ListTile(
                 leading: Builder(
                   builder: (BuildContext context) {
                     return IconButton(
-                        icon: const Icon(Icons.chevron_left_rounded,size: 50,),
+                        icon: const Icon(
+                          Icons.chevron_left_rounded,
+                          size: 50,
+                        ),
                         onPressed: () async {
                           Navigator.pop(context);
-                        }
-                    );
+                        });
                   },
                 ),
                 iconColor: Colors.amber,
-                onTap: () {// Update the state of the app
- Navigator.pop(context);
+                onTap: () {
+                  // Update the state of the app
+                  Navigator.pop(context);
                 },
               ),
             ],
@@ -170,9 +230,15 @@ class _ClientState extends State<Client> {
             leading: Builder(
               builder: (BuildContext context) {
                 return IconButton(
-                  icon: const Icon(Icons.menu,size: 40,),
-                  onPressed: () { Scaffold.of(context).openDrawer(); },
-                  tooltip: MaterialLocalizations.of(context).openAppDrawerTooltip,
+                  icon: const Icon(
+                    Icons.menu,
+                    size: 40,
+                  ),
+                  onPressed: () {
+                    Scaffold.of(context).openDrawer();
+                  },
+                  tooltip:
+                      MaterialLocalizations.of(context).openAppDrawerTooltip,
                 );
               },
             ),
@@ -180,7 +246,6 @@ class _ClientState extends State<Client> {
             title: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-
                 IconButton(
                   icon: const Icon(
                     Icons.notifications_active_outlined,
@@ -189,7 +254,8 @@ class _ClientState extends State<Client> {
                   tooltip: 'Notification',
                   onPressed: () {
                     // handle the press
-                    Navigator.push(context, MaterialPageRoute(builder: (context)=>const Noti()));
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => const Noti()));
                   },
                 ),
                 const SizedBox(
@@ -206,9 +272,9 @@ class _ClientState extends State<Client> {
                       radius: 55,
                       backgroundImage:
                           UrlImage != "" ? NetworkImage(UrlImage) : null,
-                      child: const Image(
+                      child:UrlImage == "" ? const  Image(
                         image: AssetImage("Images/man.png"),
-                      ),
+                      ):null,
                     ),
                     const Positioned(
                       top: 38,
@@ -225,7 +291,7 @@ class _ClientState extends State<Client> {
         backgroundColor: Colors.amberAccent,
         body: Center(
           child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
+            padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
             child: Column(
               children: [
                 Row(
@@ -266,73 +332,52 @@ class _ClientState extends State<Client> {
                     ),
                   ],
                 ),
-                const SizedBox(height: 20,),
+
                 Row(
                   children: [
                     Column(
                       children: [
                         Row(
-
-                         children: const [
-                           Text(
-                             " Mon abonnement : ",
-                             style: TextStyle(
-                                 color: Colors.black,
-                                 fontWeight: FontWeight.w900,
-                                 fontFamily: "PTSans",
-                                 fontSize: 24),
-                           ),
-                         ],
+                          children: const [
+                            Text(
+                              " Mon abonnement : ",
+                              style: TextStyle(
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.w900,
+                                  fontFamily: "PTSans",
+                                  fontSize: 24),
+                            ),
+                          ],
                         ),
-                       const SizedBox(height: 20,),
+                        const SizedBox(
+                          height: 20,
+                        ),
                         Row(
                           //mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            const SizedBox(width: 20,),
-                             Column(
-                               children:  [
-                                 const CircleAvatar(
+                            const SizedBox(
+                              width: 20,
+                            ),
+                            Column(
+                              children: [
+                                const CircleAvatar(
                                   backgroundColor: Colors.deepOrange,
                                   radius: 42,
                                   child: CircleAvatar(
                                     radius: 36,
                                     backgroundColor: Colors.greenAccent,
-                                    child: Text("Debut",
-                                      style: TextStyle(
-                                        color: Colors.black,
-                                        fontWeight: FontWeight.w600,
-                                        fontFamily: " Nunito",
-                                        fontSize: 20),
-                                    ),
-                                  ),
-                            ),
-                                 Text("$Debut",
-                                   style: const TextStyle(
-                                       color: Colors.black,
-                                       fontWeight: FontWeight.w600,
-                                       fontFamily: "Nunito",
-                                       fontSize: 20),
-                                 ),
-                               ],
-                             ),
-                             const SizedBox(width: 20,),
-                            Column(
-                              children:  [
-                                const CircleAvatar(
-                                  backgroundColor: Colors.blueAccent,
-                                  radius: 42,
-                                  child: CircleAvatar(
-                                    radius: 36,
-                                    backgroundColor: Colors.greenAccent,
-                                    child: Text("Prix",
+                                    child: Text(
+                                      "Debut",
                                       style: TextStyle(
                                           color: Colors.black,
                                           fontWeight: FontWeight.w600,
                                           fontFamily: " Nunito",
-                                          fontSize: 20),),
+                                          fontSize: 20),
+                                    ),
                                   ),
                                 ),
-                                Text("$Prix",
+                                Text(
+                                  "$Debut",
                                   style: const TextStyle(
                                       color: Colors.black,
                                       fontWeight: FontWeight.w600,
@@ -341,24 +386,60 @@ class _ClientState extends State<Client> {
                                 ),
                               ],
                             ),
-                            const SizedBox(width: 20,),
+                            const SizedBox(
+                              width: 20,
+                            ),
                             Column(
-                              children:  [
+                              children: [
+                                const CircleAvatar(
+                                  backgroundColor: Colors.blueAccent,
+                                  radius: 42,
+                                  child: CircleAvatar(
+                                    radius: 36,
+                                    backgroundColor: Colors.greenAccent,
+                                    child: Text(
+                                      "Prix",
+                                      style: TextStyle(
+                                          color: Colors.black,
+                                          fontWeight: FontWeight.w600,
+                                          fontFamily: " Nunito",
+                                          fontSize: 20),
+                                    ),
+                                  ),
+                                ),
+                                Text(
+                                  "$Prix",
+                                  style: const TextStyle(
+                                      color: Colors.black,
+                                      fontWeight: FontWeight.w600,
+                                      fontFamily: "Nunito",
+                                      fontSize: 20),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(
+                              width: 20,
+                            ),
+                            Column(
+                              children: [
                                 const CircleAvatar(
                                   backgroundColor: Colors.green,
                                   radius: 42,
                                   child: CircleAvatar(
                                     radius: 36,
                                     backgroundColor: Colors.greenAccent,
-                                    child: Text("Fin",
+                                    child: Text(
+                                      "Fin",
                                       style: TextStyle(
                                           color: Colors.black,
                                           fontWeight: FontWeight.w600,
                                           fontFamily: "Nunito",
-                                          fontSize: 20),),
+                                          fontSize: 20),
+                                    ),
                                   ),
                                 ),
-                                Text("$Fin",
+                                Text(
+                                  "$Fin",
                                   style: const TextStyle(
                                       color: Colors.black,
                                       fontWeight: FontWeight.w600,
@@ -391,27 +472,33 @@ class _ClientState extends State<Client> {
                               ),
                             ],
                           ),
-                          const SizedBox(height: 15,),
+                          const SizedBox(
+                            height: 15,
+                          ),
                           Row(
-                            children:  [
+                            children: [
                               Center(
-                                child: ElevatedButton.icon(onPressed:(){
-                                  Navigator.push(context, MaterialPageRoute(builder: (context)=> const Maps()));
-                                }, icon: const Icon(Icons.local_parking_outlined),
-                  style:ButtonStyle(
-                    padding:
-                    MaterialStateProperty.all(const EdgeInsets.all(10)) ,
-                  ),
-                                  label: const Text(
+                                  child: ElevatedButton.icon(
+                                onPressed: () {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => const Maps()));
+                                },
+                                icon: const Icon(Icons.local_parking_outlined),
+                                style: ButtonStyle(
+                                  padding: MaterialStateProperty.all(
+                                      const EdgeInsets.all(10)),
+                                ),
+                                label: const Text(
                                   " Localisation",
                                   style: TextStyle(
                                       color: Colors.black,
                                       fontWeight: FontWeight.w900,
                                       fontFamily: "Nunito",
                                       fontSize: 24),
-                                ),)
-
-                              ),
+                                ),
+                              )),
                             ],
                           ),
                         ],

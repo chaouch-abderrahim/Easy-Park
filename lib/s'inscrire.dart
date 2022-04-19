@@ -17,9 +17,6 @@ class Inscription extends StatefulWidget {
   Inscription(int b, String prix, {Key? key}) : super(key: key) {
     this.dure = b;
     this.prix=prix;
-    final now = DateTime.now();
-    print("now:"+now.toString());
-    print(" $dure after :"+now.add(Duration(days:dure)).toString());
   }
 
   @override
@@ -27,6 +24,7 @@ class Inscription extends StatefulWidget {
 }
 
 class _InscriptionState extends State<Inscription> {
+
  bool islaoding=false;
   final controller = TextEditingController();
   final controllerP = TextEditingController();
@@ -754,26 +752,28 @@ setState(() {
                         });
                         print(e);
                       }
+
+
                       FirebaseFirestore.instance
                           .collection('client')
-                          .get()
-                          .then((QuerySnapshot querySnapshot) {
-                        querySnapshot.docs.forEach((doc) {
-                          if( doc["Matricule"]==matricule){
-                            erreurAuth="cette Matricule existe deja ";
-                          }
-                        });
-                      });
+                          .get().then((value) => value.docs.forEach((element) {
+                        if(element.data()["Matricule"]==matricule){
+                          setState(() {
+                            erreurAuth="Matricule existe deja";
+                          });
+                        }
 
+                      }));
                       if (erreurAuth == "") {
                         if (img != null) {
                           final storageRef = FirebaseStorage.instance.ref();
                           final now = DateTime.now();
 // Create a reference to "mountains.jpg"
-                          final mountainsRef = storageRef.child("image/$nom"+now.toString());
+                          final mountainsRef = storageRef.child("image/$nom"+matricule);
                           try {
                             await mountainsRef.putFile(img!);
                           } on FirebaseException catch (e) {
+
                             print(e.message.toString());
                           }
 
@@ -782,7 +782,6 @@ setState(() {
                             UrlImage=url;
                             print("$UrlImage");
                           });
-
                           print (url);
 
                         }
@@ -790,12 +789,13 @@ setState(() {
                         final now = DateTime.now();
                         await   FirebaseFirestore.instance.collection("client").add({
                           "Abonnement":{
-                            " Debut":now
+                            "Debut":now
                             ,
                             "Fin":now.add(Duration(days: dure)),
+                            "Duration":dure,
                             "Prix":prix+"DH"},
                           "Adress":adress,
-                          " Email":email,
+                          "Email":email,
                           "Matricule":matricule,
                           "Nom":nom,
                           "Prenom":prenom,
@@ -828,6 +828,13 @@ setState(() {
                           btnOkOnPress: () {},
                         ).show();
                       }
+                    }
+                    else{
+
+                      setState(() {
+                        erreurAuth="";
+                        islaoding=false;
+                      });
                     }
                   },
                   child:islaoding?const CircularProgressIndicator(semanticsLabel: "Please Waite ...",):  const Text(

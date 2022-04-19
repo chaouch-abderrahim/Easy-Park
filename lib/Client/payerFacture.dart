@@ -1,4 +1,6 @@
-
+import 'package:awesome_dialog/awesome_dialog.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_credit_card/credit_card_brand.dart';
@@ -8,9 +10,7 @@ import 'package:flutter_credit_card/flutter_credit_card.dart';
 
 import 'Client.dart';
 
-
 class PayerFacture extends StatefulWidget {
-
   @override
   State<StatefulWidget> createState() {
     return PayerFactureState();
@@ -27,11 +27,13 @@ class PayerFactureState extends State<PayerFacture> {
   bool useBackgroundImage = false;
   OutlineInputBorder? border;
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
-
+  String Email = "";
+  DateTime date = DateTime.now();
+  late Timestamp now = Timestamp.fromDate(date);
+  late Timestamp Fin, debut;
 
   @override
   void initState() {
-
     border = OutlineInputBorder(
       borderSide: BorderSide(
         color: Colors.grey.withOpacity(0.7),
@@ -41,11 +43,68 @@ class PayerFactureState extends State<PayerFacture> {
     super.initState();
   }
 
+  void payerFacture() {
+    setState(() {
+      Email = FirebaseAuth.instance.currentUser!.email!;
+    });
+    FirebaseFirestore.instance
+        .collection("client")
+        .get()
+        .then((QuerySnapshot snapshot) => snapshot.docs.forEach((element) {
+              if (element["Email"] == Email) {
+                /* setState(() {
+                  Fin=element["Abonnement"]["Fin"];
+                           });*/
+                if (now.compareTo(element["Abonnement"]["Fin"]) >= 0) {
+                  FirebaseFirestore.instance
+                      .collection("client")
+                      .doc(element.id)
+                      .update({
+                    "Abonnement": {
+                      "Debut": now,
+                      "Fin": date.add(
+                          Duration(days: element["Abonnement"]["Duration"])),
+                      "Prix": element["Abonnement"]["Prix"],
+                      "Duration": element["Abonnement"]["Duration"]
+                    }
+                  });
+                  AwesomeDialog(
+                    context: context,
+                    keyboardAware: true,
+                    dismissOnBackKeyPress: false,
+                    dialogType: DialogType.WARNING,
+                    animType: AnimType.BOTTOMSLIDE,
+                    btnOkText: "ok",
+                    title: "Operation passer avec succes Merci",
+                    // padding: const EdgeInsets.all(5.0),
+                    btnCancelOnPress: () {},
+                    btnOkOnPress: () {},
+                  ).show();
+                } else {
+                  AwesomeDialog(
+                    context: context,
+                    keyboardAware: true,
+                    dismissOnBackKeyPress: false,
+                    dialogType: DialogType.WARNING,
+                    animType: AnimType.BOTTOMSLIDE,
+                    btnOkText: "ok",
+                    title: "Vous n'avez  aucune facture",
+                    // padding: const EdgeInsets.all(5.0),
+                    btnCancelOnPress: () {},
+                    btnOkOnPress: () {},
+                  ).show();
+                }
+              }
+            }));
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-
-      appBar: AppBar(title:const Text("Payer Facture"),backgroundColor: Colors.amber,),
+      appBar: AppBar(
+        title: const Text("Payer Facture"),
+        backgroundColor: Colors.amber,
+      ),
       body: MaterialApp(
         title: 'Flutter Credit Card View Demo',
         debugShowCheckedModeBanner: false,
@@ -55,14 +114,12 @@ class PayerFactureState extends State<PayerFacture> {
         home: Scaffold(
           resizeToAvoidBottomInset: false,
           body: Container(
-
             decoration: BoxDecoration(
-
               image: !useBackgroundImage
                   ? const DecorationImage(
-                image: ExactAssetImage('Images/1.gif'),
-                fit: BoxFit.fill,
-              )
+                      image: ExactAssetImage('Images/1.gif'),
+                      fit: BoxFit.fill,
+                    )
                   : null,
               color: Colors.black,
             ),
@@ -74,7 +131,7 @@ class PayerFactureState extends State<PayerFacture> {
                   ),
                   CreditCardWidget(
                     glassmorphismConfig:
-                    useGlassMorphism ? Glassmorphism.defaultConfig() : null,
+                        useGlassMorphism ? Glassmorphism.defaultConfig() : null,
                     cardNumber: cardNumber,
                     expiryDate: expiryDate,
                     cardHolderName: cardHolderName,
@@ -85,9 +142,10 @@ class PayerFactureState extends State<PayerFacture> {
                     isHolderNameVisible: true,
                     cardBgColor: Colors.blueAccent,
                     backgroundImage:
-                    useBackgroundImage ? 'Images/card.png' : null,
+                        useBackgroundImage ? 'Images/card.png' : null,
                     isSwipeGestureEnabled: true,
-                    onCreditCardWidgetChange: (CreditCardBrand creditCardBrand) {},
+                    onCreditCardWidgetChange:
+                        (CreditCardBrand creditCardBrand) {},
                     customCardTypeIcons: <CustomCardTypeIcon>[
                       CustomCardTypeIcon(
                         cardType: CardType.mastercard,
@@ -219,7 +277,8 @@ class PayerFactureState extends State<PayerFacture> {
                             onPressed: () {
                               if (formKey.currentState!.validate()) {
                                 print('valid!');
-                                Navigator.push((context), MaterialPageRoute(builder: (context)=>const Client()));
+                                payerFacture();
+                                 Navigator.push((context), MaterialPageRoute(builder: (context)=>const Client()));
                               } else {
                                 print('invalid!');
                               }

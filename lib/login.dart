@@ -6,6 +6,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'Client/Client.dart';
 import 'Controleur.dart';
+import 'forgetpassword.dart';
 
 class Acceuil extends StatefulWidget {
   const Acceuil({Key? key}) : super(key: key);
@@ -16,12 +17,13 @@ class Acceuil extends StatefulWidget {
 
 class _AcceuilState extends State<Acceuil> {
   final _auth = FirebaseAuth.instance;
-  late String email;
-  late String password;
+   String email="";
+   String password="";
   bool spin = false;
   bool etat = false;
   bool _validatepassword = false;
   bool _validatemail = false;
+  bool visible=true;
 
   Widget title() {
     return Row(
@@ -58,36 +60,28 @@ class _AcceuilState extends State<Acceuil> {
   Widget _button() {
     return ElevatedButton(
       onPressed: () async {
-       if(email.isEmpty || password.isEmpty){
-       setState(() {
-         etat=false;
-       });
-         if(email.isEmpty){
+        if(email==""){
+          setState(() {
+            _validatemail=true;
+          });
+        }
+        else{
+          setState(() {
+            _validatemail=false;
+          });
+        }
 
-           setState(() {
-           _validatemail=true;
-         });}
-         else{
-
-           setState(() {
-             _validatemail=false;
-           });
-         }
-         if(password.isEmpty){
-
-           setState(() {
-             _validatepassword=true;
-           });
-         }
-         else{
-
-           setState(() {
-             _validatepassword=false;
-           });
-         }
-
-       }
-       else{
+        if(password==""){
+          setState(() {
+            _validatepassword=true;
+          });
+        }
+        else{
+          setState(() {
+            _validatepassword=false;
+          });
+        }
+       if(_validatepassword==false && _validatemail==false){
         try {
          await _auth.signInWithEmailAndPassword(
               email: email, password: password).then((value)=>{
@@ -100,19 +94,14 @@ class _AcceuilState extends State<Acceuil> {
         context, MaterialPageRoute(builder: (context) => const Client()))
         }
           });
+         setState(() {
+           etat=false;
+         });
 
-
-          setState(() {
-            etat=false;
-            _validatemail=false;
-            _validatepassword=false;
-          });
         } catch (e) {
           print("bonjour   $e");
           setState(() {
             etat=true;
-            _validatemail=false;
-            _validatepassword=false;
           });
 
         }}
@@ -154,7 +143,9 @@ class _AcceuilState extends State<Acceuil> {
             ),
           ),
           TextButton(
-            onPressed: () {},
+            onPressed: () {
+              Navigator.push(context, MaterialPageRoute(builder: (context)=> ResetScreen()));
+            },
             child: const Text(
               'Mot de passe oublier ?',
               style: TextStyle(
@@ -198,10 +189,9 @@ class _AcceuilState extends State<Acceuil> {
                 filled: true,
                 hintText: 'Email',
                 hintStyle: const TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.w400,
+
                   color: Colors.black,
-                  fontFamily: 'PT',
+
                 ),
                 prefixIcon: const Icon(
                   Icons.email,
@@ -221,7 +211,7 @@ class _AcceuilState extends State<Acceuil> {
                 password = value;
               },
               cursorColor: Colors.transparent,
-              obscureText: true,
+              obscureText: visible,
               style: const TextStyle(color: Colors.brown, fontSize: 20),
               decoration: InputDecoration(
                 errorText: _validatepassword ? 'Value Can\'t Be Empty' : null,
@@ -230,11 +220,31 @@ class _AcceuilState extends State<Acceuil> {
                 filled: true,
                 hintText: 'pasword',
                 hintStyle: const TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.w400,
+
                   color: Colors.black,
-                  fontFamily: 'PT',
+
                 ),
+                suffixIcon: visible
+                    ? IconButton(
+                    onPressed: () {
+                      setState(() {
+                        visible = false;
+                      });
+                    },
+                    icon: const Icon(
+                      Icons.visibility_off_outlined,
+                      color: Colors.deepOrange,
+                    ))
+                    : IconButton(
+                    onPressed: () {
+                      setState(() {
+                        visible = true;
+                      });
+                    },
+                    icon: const Icon(
+                      Icons.visibility,
+                      color: Colors.deepOrange,
+                    )),
                 prefixIcon: const Icon(
                   Icons.lock,
                   color: Colors.orange,
