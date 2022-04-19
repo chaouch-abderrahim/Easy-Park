@@ -17,9 +17,6 @@ class Inscription extends StatefulWidget {
   Inscription(int b, String prix, {Key? key}) : super(key: key) {
     this.dure = b;
     this.prix=prix;
-    final now = DateTime.now();
-    print("now:"+now.toString());
-    print(" $dure after :"+now.add(Duration(days:dure)).toString());
   }
 
   @override
@@ -790,12 +787,13 @@ setState(() {
                         final now = DateTime.now();
                         await   FirebaseFirestore.instance.collection("client").add({
                           "Abonnement":{
-                            " Debut":now
+                            "Debut":now
                             ,
                             "Fin":now.add(Duration(days: dure)),
+                            "Duration":dure,
                             "Prix":prix+"DH"},
                           "Adress":adress,
-                          " Email":email,
+                          "abdeEmail":email,
                           "Matricule":matricule,
                           "Nom":nom,
                           "Prenom":prenom,
@@ -828,6 +826,11 @@ setState(() {
                           btnOkOnPress: () {},
                         ).show();
                       }
+                    }
+                    else{
+                      setState(() {
+                        islaoding=false;
+                      });
                     }
                   },
                   child:islaoding?const CircularProgressIndicator(semanticsLabel: "Please Waite ...",):  const Text(
