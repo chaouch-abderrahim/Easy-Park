@@ -63,44 +63,44 @@ class _ResetScreenState extends State<ResetScreen> {
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
                 ElevatedButton(
-                    child: Text(
-                        "Reset password".toUpperCase(),
-                        style: TextStyle(fontSize: 14)
-                    ),
-                    style: ButtonStyle(
-                        foregroundColor: MaterialStateProperty.all<Color>(Colors.white),
-                        backgroundColor: MaterialStateProperty.all<Color>(Colors.red),
-                        shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                            const RoundedRectangleBorder(
-                                borderRadius: BorderRadius.zero,
-                                side: BorderSide(color: Colors.red)
-                            )
-                        )
-                    ),
+                  child: Text(
+                      "Reset password".toUpperCase(),
+                      style: TextStyle(fontSize: 14)
+                  ),
+                  style: ButtonStyle(
+                      foregroundColor: MaterialStateProperty.all<Color>(Colors.white),
+                      backgroundColor: MaterialStateProperty.all<Color>(Colors.red),
+                      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                          const RoundedRectangleBorder(
+                              borderRadius: BorderRadius.zero,
+                              side: BorderSide(color: Colors.red)
+                          )
+                      )
+                  ),
                   onPressed: () {
-                      if(_email!=""){
-                        setState(() {
-                          erreur="";
-                        });
-                    auth.sendPasswordResetEmail(email: _email);
-                    AwesomeDialog(
-                      context: context,
-                      keyboardAware: true,
-                      dismissOnBackKeyPress: false,
-                      dialogType: DialogType.WARNING,
-                      animType: AnimType.BOTTOMSLIDE,
+                    if(_email!=""){
+                      setState(() {
+                        erreur="";
+                      });
+                      auth.sendPasswordResetEmail(email: _email);
+                      AwesomeDialog(
+                        context: context,
+                        keyboardAware: true,
+                        dismissOnBackKeyPress: false,
+                        dialogType: DialogType.WARNING,
+                        animType: AnimType.BOTTOMSLIDE,
 
-                      btnOkText: "ok",
-                      title: "Vérifier votre e-mail",
-                      // padding: const EdgeInsets.all(5.0),
+                        btnOkText: "ok",
+                        title: "Vérifier votre e-mail",
+                        // padding: const EdgeInsets.all(5.0),
 
-                      btnOkOnPress: () {},
-                    ).show();
-                      }else{
-                        setState(() {
-                          erreur="required *";
-                        });
-                      }
+                        btnOkOnPress: () {},
+                      ).show();
+                    }else{
+                      setState(() {
+                        erreur="required *";
+                      });
+                    }
 
 
                   },
@@ -109,8 +109,8 @@ class _ResetScreenState extends State<ResetScreen> {
                   child: Text(
                       "Go Back".toUpperCase(),
                       style: const TextStyle(fontSize: 14,
-                        color:Colors.red,
-                        fontWeight: FontWeight.w600
+                          color:Colors.red,
+                          fontWeight: FontWeight.w600
                       )
                   ),
                   style: ButtonStyle(
@@ -135,7 +135,7 @@ class _ResetScreenState extends State<ResetScreen> {
       ),
     );
   }
-   passe(){
+  passe(){
     Navigator.of(context).pop();
   }
 }

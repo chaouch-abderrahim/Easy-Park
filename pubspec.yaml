@@ -48,6 +48,8 @@ dependencies:
   flutter_credit_card: ^3.0.1
   path: ^1.8.0
   awesome_dialog: ^2.2.0
+  dependencies:
+  alert: ^2.0.1
 
 dev_dependencies:
   flutter_test:

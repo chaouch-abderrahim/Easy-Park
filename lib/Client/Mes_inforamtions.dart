@@ -17,32 +17,32 @@ class _MesInformationsState extends State<MesInformations> {
   String UrlImage="",Nom="",Prenom="",Adress="",Tel="",Email="",Matricule="";
   bool ishide=true;
   File? img;
- @override
+  @override
 
- void initState() {
-   // TODO: implement initState
-   super.initState();
-   setState(() {
-     Email=FirebaseAuth.instance.currentUser!.email!;
-   });
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    setState(() {
+      Email=FirebaseAuth.instance.currentUser!.email!;
+    });
 
-   FirebaseFirestore.instance
-       .collection('client')
-       .get().then((value) => value.docs.forEach((element) {
-     if(element.data()["Email"]==Email){
-       setState(() {
-         Nom=element.data()["Nom"];
-         Matricule= element.data()["Matricule"];
-         Prenom=element.data()["Prenom"];
-         Tel=element.data()["Tele"];
-         Adress = element.data()["Adress"];
-         UrlImage=element.data()["Urlimage"];
+    FirebaseFirestore.instance
+        .collection('client')
+        .get().then((value) => value.docs.forEach((element) {
+      if(element.data()["Email"]==Email){
+        setState(() {
+          Nom=element.data()["Nom"];
+          Matricule= element.data()["Matricule"];
+          Prenom=element.data()["Prenom"];
+          Tel=element.data()["Tele"];
+          Adress = element.data()["Adress"];
+          UrlImage=element.data()["Urlimage"];
 
-       });
-     }
-   }));
+        });
+      }
+    }));
 
- }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -61,42 +61,42 @@ class _MesInformationsState extends State<MesInformations> {
               children: [
                 Center(
                   child:
-                Stack(
-                  children: [
-                    Container(
-                      width: 120,
-                      height:130 ,
-                      decoration: BoxDecoration(
-                        border: Border.all(width: 4,color: Colors.white),
-                        boxShadow: [
-                          BoxShadow(
-                            spreadRadius: 2,
-                            blurRadius: 10,
-                            color: Colors.black.withOpacity(0.1)
-                          )
-                        ],
-                        shape: BoxShape.circle,
-                        image: DecorationImage(
-                          fit: BoxFit.cover,
-                         image:UrlImage==""? const NetworkImage("https://cdn.pixabay.com/photo/2022/04/02/12/29/wild-daffodils-7106921_640.jpg"): NetworkImage(UrlImage),
+                  Stack(
+                    children: [
+                      Container(
+                        width: 120,
+                        height:130 ,
+                        decoration: BoxDecoration(
+                          border: Border.all(width: 4,color: Colors.white),
+                          boxShadow: [
+                            BoxShadow(
+                                spreadRadius: 2,
+                                blurRadius: 10,
+                                color: Colors.black.withOpacity(0.1)
+                            )
+                          ],
+                          shape: BoxShape.circle,
+                          image: DecorationImage(
+                            fit: BoxFit.cover,
+                            image:UrlImage==""? const NetworkImage("https://cdn.pixabay.com/photo/2022/04/02/12/29/wild-daffodils-7106921_640.jpg"): NetworkImage(UrlImage),
+                          ),
+                        ),
                       ),
-                    ),
-                    ),
-                    Positioned(
+                      Positioned(
                         bottom: 0,
                         right: 0,
                         child: Container(
                           height: 30,
                           width: 30,
                           decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              border: Border.all(width: 4,color: Colors.white),
+                            shape: BoxShape.circle,
+                            border: Border.all(width: 4,color: Colors.white),
                             color: Colors.green,),
 
                         ),
-                    ),
-                  ],
-                ),
+                      ),
+                    ],
+                  ),
 
                 ),
                 const SizedBox(height: 30,),
@@ -139,15 +139,15 @@ class _MesInformationsState extends State<MesInformations> {
 
   Widget LabelText(String lbl ,String contenu){
     return Padding(padding: const EdgeInsets.only(bottom: 15,top: 15),
-    child:Row(
-      mainAxisAlignment: MainAxisAlignment.spaceAround,
-      children: [
-        Text(lbl+"   :",  style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold),),
-        Text(contenu,  style: TextStyle(fontSize: 20),),
+        child:Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            Text(lbl+"   :",  style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold),),
+            Text(contenu,  style: TextStyle(fontSize: 20),),
 
 
-      ],
-    )
+          ],
+        )
     );
   }
 

@@ -46,25 +46,25 @@ class _ClientState extends State<Client> {
     setState(() {
       Email = getcurrentuser()!;
     });
-   FirebaseFirestore.instance
+    FirebaseFirestore.instance
         .collection('client')
         .get().then((value) => value.docs.forEach((element) {
-          if(element.data()["Email"]==Email){
-            setState(() {
-              Nom=element.data()["Nom"];
-             Matricule= element.data()["Matricule"];
-             Prix=element.data()["Abonnement"]["Prix"];
-             Fin=element.data()["Abonnement"]["Fin"].toDate().toString().substring(0,10);
-             Debut = element.data()["Abonnement"]["Debut"].toDate().toString().substring(0,10);
-             UrlImage=element.data()["Urlimage"];
+      if(element.data()["Email"]==Email){
+        setState(() {
+          Nom=element.data()["Nom"];
+          Matricule= element.data()["Matricule"];
+          Prix=element.data()["Abonnement"]["Prix"];
+          Fin=element.data()["Abonnement"]["Fin"].toDate().toString().substring(0,10);
+          Debut = element.data()["Abonnement"]["Debut"].toDate().toString().substring(0,10);
+          UrlImage=element.data()["Urlimage"];
 
-            });
-          }
+        });
+      }
 
-          print(Debut);
-          print(element.data()["Matricule"]);
+      print(Debut);
+      print(element.data()["Matricule"]);
 
-   }));
+    }));
 
   }
 
@@ -100,7 +100,7 @@ class _ClientState extends State<Client> {
                           child: CircleAvatar(
                             radius: 40,
                             backgroundImage:
-                                UrlImage != "" ? NetworkImage(UrlImage) : null,
+                            UrlImage != "" ? NetworkImage(UrlImage) : null,
                             child:UrlImage == "" ? const Image(
                               image: AssetImage("Images/man.png"),
                             ):null,
@@ -238,7 +238,7 @@ class _ClientState extends State<Client> {
                     Scaffold.of(context).openDrawer();
                   },
                   tooltip:
-                      MaterialLocalizations.of(context).openAppDrawerTooltip,
+                  MaterialLocalizations.of(context).openAppDrawerTooltip,
                 );
               },
             ),
@@ -271,7 +271,7 @@ class _ClientState extends State<Client> {
                     CircleAvatar(
                       radius: 55,
                       backgroundImage:
-                          UrlImage != "" ? NetworkImage(UrlImage) : null,
+                      UrlImage != "" ? NetworkImage(UrlImage) : null,
                       child:UrlImage == "" ? const  Image(
                         image: AssetImage("Images/man.png"),
                       ):null,
@@ -292,7 +292,7 @@ class _ClientState extends State<Client> {
         body: Center(
           child: Padding(
             padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-            child: Column(
+            child: ListView(
               children: [
                 Row(
                   children: [
@@ -350,13 +350,13 @@ class _ClientState extends State<Client> {
                           ],
                         ),
                         const SizedBox(
-                          height: 20,
+                          height: 10,
                         ),
                         Row(
                           //mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             const SizedBox(
-                              width: 20,
+                              width: 10,
                             ),
                             Column(
                               children: [
@@ -387,7 +387,7 @@ class _ClientState extends State<Client> {
                               ],
                             ),
                             const SizedBox(
-                              width: 20,
+                              width: 10,
                             ),
                             Column(
                               children: [
@@ -418,7 +418,7 @@ class _ClientState extends State<Client> {
                               ],
                             ),
                             const SizedBox(
-                              width: 20,
+                              width: 10,
                             ),
                             Column(
                               children: [
@@ -479,26 +479,26 @@ class _ClientState extends State<Client> {
                             children: [
                               Center(
                                   child: ElevatedButton.icon(
-                                onPressed: () {
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) => const Maps()));
-                                },
-                                icon: const Icon(Icons.local_parking_outlined),
-                                style: ButtonStyle(
-                                  padding: MaterialStateProperty.all(
-                                      const EdgeInsets.all(10)),
-                                ),
-                                label: const Text(
-                                  " Localisation",
-                                  style: TextStyle(
-                                      color: Colors.black,
-                                      fontWeight: FontWeight.w900,
-                                      fontFamily: "Nunito",
-                                      fontSize: 24),
-                                ),
-                              )),
+                                    onPressed: () {
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>  Maps(/*Matricule*/)));
+                                    },
+                                    icon: const Icon(Icons.local_parking_outlined),
+                                    style: ButtonStyle(
+                                      padding: MaterialStateProperty.all(
+                                          const EdgeInsets.all(10)),
+                                    ),
+                                    label: const Text(
+                                      " Localisation",
+                                      style: TextStyle(
+                                          color: Colors.black,
+                                          fontWeight: FontWeight.w900,
+                                          fontFamily: "Nunito",
+                                          fontSize: 24),
+                                    ),
+                                  )),
                             ],
                           ),
                         ],

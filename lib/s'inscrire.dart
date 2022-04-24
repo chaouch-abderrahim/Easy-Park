@@ -25,7 +25,7 @@ class Inscription extends StatefulWidget {
 
 class _InscriptionState extends State<Inscription> {
 
- bool islaoding=false;
+  bool islaoding=false;
   final controller = TextEditingController();
   final controllerP = TextEditingController();
   final controllerT = TextEditingController();
@@ -41,7 +41,7 @@ class _InscriptionState extends State<Inscription> {
       erreurAdress = "le champs est obligatoire",
       erreurPassword = "le champs est obligatoire";
   String erreurTel = "le champs est obligatoire";
-  String nom = "",
+  String nom = "",MatriculeExiste="",
       prenom = "",
       tele = "",
       email = "",
@@ -105,11 +105,11 @@ class _InscriptionState extends State<Inscription> {
       print(e.message.toString());
     }
 
-      url = await mountainsRef.getDownloadURL();
- setState(() {
-   UrlImage=url;
-   print("$UrlImage");
- });
+    url = await mountainsRef.getDownloadURL();
+    setState(() {
+      UrlImage=url;
+      print("$UrlImage");
+    });
 
     print (url);
   }
@@ -132,9 +132,9 @@ class _InscriptionState extends State<Inscription> {
   void dispose() {
     // TODO: implement dispose
 //_timer!.cancel();
-setState(() {
-  islaoding=false;
-});
+    setState(() {
+      islaoding=false;
+    });
     super.dispose();
   }
 
@@ -164,8 +164,8 @@ setState(() {
                           radius: 64,
                           child: img == null
                               ? const Image(
-                                  image: AssetImage("Images/man.png"),
-                                )
+                            image: AssetImage("Images/man.png"),
+                          )
                               : null,
                         ))),
                 Positioned(
@@ -283,7 +283,7 @@ setState(() {
             Column(children: [
               Padding(
                 padding:
-                    const EdgeInsets.symmetric(horizontal: 20.0, vertical: 20),
+                const EdgeInsets.symmetric(horizontal: 20.0, vertical: 20),
                 child: TextField(
                   onChanged: (value) {
                     setState(() {
@@ -298,10 +298,10 @@ setState(() {
                     fillColor: Colors.amberAccent,
                     enabledBorder: const OutlineInputBorder(
                         borderSide:
-                            BorderSide(color: Colors.orangeAccent, width: 2.0)),
+                        BorderSide(color: Colors.orangeAccent, width: 2.0)),
                     focusedBorder: const OutlineInputBorder(
                         borderSide:
-                            BorderSide(color: Colors.orange, width: 2.0)),
+                        BorderSide(color: Colors.orange, width: 2.0)),
                     labelText: "Nom",
                     labelStyle: const TextStyle(color: Colors.black),
                     prefixIcon: const Icon(
@@ -310,17 +310,17 @@ setState(() {
                     ),
                     suffixIcon: controller.text.isEmpty
                         ? Container(
-                            width: 0,
-                          )
+                      width: 0,
+                    )
                         : IconButton(
-                            onPressed: () {
-                              controller.clear();
-                              nom="";
-                            },
-                            icon: const Icon(
-                              Icons.close,
-                              color: Colors.deepOrange,
-                            )),
+                        onPressed: () {
+                          controller.clear();
+                          nom="";
+                        },
+                        icon: const Icon(
+                          Icons.close,
+                          color: Colors.deepOrange,
+                        )),
                     errorText: valideNom ? erreurNom : null,
                   ),
                 ),
@@ -329,7 +329,7 @@ setState(() {
             Column(children: [
               Padding(
                 padding:
-                    const EdgeInsets.symmetric(horizontal: 20.0, vertical: 20),
+                const EdgeInsets.symmetric(horizontal: 20.0, vertical: 20),
                 child: TextField(
                   onChanged: (value) {
                     setState(() {
@@ -344,10 +344,10 @@ setState(() {
                     fillColor: Colors.amberAccent,
                     enabledBorder: const OutlineInputBorder(
                         borderSide:
-                            BorderSide(color: Colors.orangeAccent, width: 2.0)),
+                        BorderSide(color: Colors.orangeAccent, width: 2.0)),
                     focusedBorder: const OutlineInputBorder(
                         borderSide:
-                            BorderSide(color: Colors.orange, width: 2.0)),
+                        BorderSide(color: Colors.orange, width: 2.0)),
                     labelText: "Prenom",
                     labelStyle: const TextStyle(color: Colors.black),
                     prefixIcon: const Icon(
@@ -356,17 +356,17 @@ setState(() {
                     ),
                     suffixIcon: controllerP.text.isEmpty
                         ? Container(
-                            width: 0,
-                          )
+                      width: 0,
+                    )
                         : IconButton(
-                            onPressed: () {
-                              controllerP.clear();
-                              prenom="";
-                            },
-                            icon: const Icon(
-                              Icons.close,
-                              color: Colors.deepOrange,
-                            )),
+                        onPressed: () {
+                          controllerP.clear();
+                          prenom="";
+                        },
+                        icon: const Icon(
+                          Icons.close,
+                          color: Colors.deepOrange,
+                        )),
                     errorText: validePrenom ? erreurPrenom : null,
                   ),
                 ),
@@ -375,7 +375,7 @@ setState(() {
             Column(children: [
               Padding(
                 padding:
-                    const EdgeInsets.symmetric(horizontal: 20.0, vertical: 20),
+                const EdgeInsets.symmetric(horizontal: 20.0, vertical: 20),
                 child: TextField(
                   onChanged: (value) {
                     setState(() {
@@ -390,10 +390,10 @@ setState(() {
                     fillColor: Colors.amberAccent,
                     enabledBorder: const OutlineInputBorder(
                         borderSide:
-                            BorderSide(color: Colors.orangeAccent, width: 2.0)),
+                        BorderSide(color: Colors.orangeAccent, width: 2.0)),
                     focusedBorder: const OutlineInputBorder(
                         borderSide:
-                            BorderSide(color: Colors.orange, width: 2.0)),
+                        BorderSide(color: Colors.orange, width: 2.0)),
                     labelText: "Tel",
                     labelStyle: const TextStyle(color: Colors.black),
                     prefixIcon: const Icon(
@@ -402,17 +402,17 @@ setState(() {
                     ),
                     suffixIcon: controllerT.text.isEmpty
                         ? Container(
-                            width: 0,
-                          )
+                      width: 0,
+                    )
                         : IconButton(
-                            onPressed: () {
-                              controllerT.clear();
-                              tele="";
-                            },
-                            icon: const Icon(
-                              Icons.close,
-                              color: Colors.pink,
-                            )),
+                        onPressed: () {
+                          controllerT.clear();
+                          tele="";
+                        },
+                        icon: const Icon(
+                          Icons.close,
+                          color: Colors.pink,
+                        )),
                     errorText: valideTele ? erreurTel : null,
                   ),
                 ),
@@ -421,7 +421,7 @@ setState(() {
             Column(children: [
               Padding(
                 padding:
-                    const EdgeInsets.symmetric(horizontal: 20.0, vertical: 20),
+                const EdgeInsets.symmetric(horizontal: 20.0, vertical: 20),
                 child: TextField(
                   onChanged: (value) {
                     setState(() {
@@ -436,10 +436,10 @@ setState(() {
                     fillColor: Colors.amberAccent,
                     enabledBorder: const OutlineInputBorder(
                         borderSide:
-                            BorderSide(color: Colors.orangeAccent, width: 2.0)),
+                        BorderSide(color: Colors.orangeAccent, width: 2.0)),
                     focusedBorder: const OutlineInputBorder(
                         borderSide:
-                            BorderSide(color: Colors.orange, width: 2.0)),
+                        BorderSide(color: Colors.orange, width: 2.0)),
                     labelText: "Adresse",
                     labelStyle: const TextStyle(color: Colors.black),
                     prefixIcon: const Icon(
@@ -448,17 +448,17 @@ setState(() {
                     ),
                     suffixIcon: controllerA.text.isEmpty
                         ? Container(
-                            width: 0,
-                          )
+                      width: 0,
+                    )
                         : IconButton(
-                            onPressed: () {
-                              controllerA.clear();
-                              adress="";
-                            },
-                            icon: const Icon(
-                              Icons.close,
-                              color: Colors.pink,
-                            )),
+                        onPressed: () {
+                          controllerA.clear();
+                          adress="";
+                        },
+                        icon: const Icon(
+                          Icons.close,
+                          color: Colors.pink,
+                        )),
                     errorText: valideAdress ? erreurAdress : null,
                   ),
                 ),
@@ -467,7 +467,7 @@ setState(() {
             Column(children: [
               Padding(
                 padding:
-                    const EdgeInsets.symmetric(horizontal: 20.0, vertical: 20),
+                const EdgeInsets.symmetric(horizontal: 20.0, vertical: 20),
                 child: TextField(
                   onChanged: (value) {
                     setState(() {
@@ -482,10 +482,10 @@ setState(() {
                     fillColor: Colors.amberAccent,
                     enabledBorder: const OutlineInputBorder(
                         borderSide:
-                            BorderSide(color: Colors.orangeAccent, width: 2.0)),
+                        BorderSide(color: Colors.orangeAccent, width: 2.0)),
                     focusedBorder: const OutlineInputBorder(
                         borderSide:
-                            BorderSide(color: Colors.orange, width: 2.0)),
+                        BorderSide(color: Colors.orange, width: 2.0)),
                     labelText: "Matricule",
                     labelStyle: const TextStyle(color: Colors.black),
                     prefixIcon: const Icon(
@@ -494,17 +494,17 @@ setState(() {
                     ),
                     suffixIcon: controllerM.text.isEmpty
                         ? Container(
-                            width: 0,
-                          )
+                      width: 0,
+                    )
                         : IconButton(
-                            onPressed: () {
-                              controllerM.clear();
-                              matricule="";
-                            },
-                            icon: const Icon(
-                              Icons.close,
-                              color: Colors.deepOrange,
-                            )),
+                        onPressed: () {
+                          controllerM.clear();
+                          matricule="";
+                        },
+                        icon: const Icon(
+                          Icons.close,
+                          color: Colors.deepOrange,
+                        )),
                     errorText: valideMatricule ? erreurMatricule : null,
                   ),
                 ),
@@ -513,7 +513,7 @@ setState(() {
             Column(children: [
               Padding(
                 padding:
-                    const EdgeInsets.symmetric(horizontal: 20.0, vertical: 20),
+                const EdgeInsets.symmetric(horizontal: 20.0, vertical: 20),
                 child: TextField(
                   onChanged: (value) {
                     setState(() {
@@ -528,10 +528,10 @@ setState(() {
                     fillColor: Colors.amberAccent,
                     enabledBorder: const OutlineInputBorder(
                         borderSide:
-                            BorderSide(color: Colors.orangeAccent, width: 2.0)),
+                        BorderSide(color: Colors.orangeAccent, width: 2.0)),
                     focusedBorder: const OutlineInputBorder(
                         borderSide:
-                            BorderSide(color: Colors.orange, width: 2.0)),
+                        BorderSide(color: Colors.orange, width: 2.0)),
                     labelText: "Email",
                     labelStyle: const TextStyle(color: Colors.black),
                     prefixIcon: const Icon(
@@ -540,17 +540,17 @@ setState(() {
                     ),
                     suffixIcon: controllerE.text.isEmpty
                         ? Container(
-                            width: 0,
-                          )
+                      width: 0,
+                    )
                         : IconButton(
-                            onPressed: () {
-                              controllerE.clear();
-                              email="";
-                            },
-                            icon: const Icon(
-                              Icons.close,
-                              color: Colors.deepOrange,
-                            )),
+                        onPressed: () {
+                          controllerE.clear();
+                          email="";
+                        },
+                        icon: const Icon(
+                          Icons.close,
+                          color: Colors.deepOrange,
+                        )),
                     errorText: valideEmaill ? erreurEmail : null,
                   ),
                 ),
@@ -559,7 +559,7 @@ setState(() {
             Column(children: [
               Padding(
                 padding:
-                    const EdgeInsets.symmetric(horizontal: 20.0, vertical: 20),
+                const EdgeInsets.symmetric(horizontal: 20.0, vertical: 20),
                 child: TextField(
                   onChanged: (value) {
                     setState(() {
@@ -574,10 +574,10 @@ setState(() {
                     fillColor: Colors.amberAccent,
                     enabledBorder: const OutlineInputBorder(
                         borderSide:
-                            BorderSide(color: Colors.orangeAccent, width: 2.0)),
+                        BorderSide(color: Colors.orangeAccent, width: 2.0)),
                     focusedBorder: const OutlineInputBorder(
                         borderSide:
-                            BorderSide(color: Colors.orange, width: 2.0)),
+                        BorderSide(color: Colors.orange, width: 2.0)),
                     labelText: "Password",
                     labelStyle: const TextStyle(color: Colors.black),
                     prefixIcon: const Icon(
@@ -586,25 +586,25 @@ setState(() {
                     ),
                     suffixIcon: visible
                         ? IconButton(
-                            onPressed: () {
-                              setState(() {
-                                visible = false;
-                              });
-                            },
-                            icon: const Icon(
-                              Icons.visibility_off_outlined,
-                              color: Colors.deepOrange,
-                            ))
+                        onPressed: () {
+                          setState(() {
+                            visible = false;
+                          });
+                        },
+                        icon: const Icon(
+                          Icons.visibility_off_outlined,
+                          color: Colors.deepOrange,
+                        ))
                         : IconButton(
-                            onPressed: () {
-                              setState(() {
-                                visible = true;
-                              });
-                            },
-                            icon: const Icon(
-                              Icons.visibility,
-                              color: Colors.deepOrange,
-                            )),
+                        onPressed: () {
+                          setState(() {
+                            visible = true;
+                          });
+                        },
+                        icon: const Icon(
+                          Icons.visibility,
+                          color: Colors.deepOrange,
+                        )),
                     errorText: validePassword ? erreurPassword : null,
                   ),
                 ),
@@ -685,7 +685,7 @@ setState(() {
                       if (password.length < 8) {
                         setState(() {
                           erreurPassword =
-                              " Il doit être composé d'au moins 8 caractères";
+                          " Il doit être composé d'au moins 8 caractères";
                         });
                       }
                     } else {
@@ -703,16 +703,35 @@ setState(() {
                         !valideAdress) {
 
 
-                      try {
-                        UserCredential  userCredential = await FirebaseAuth.instance
-                            .createUserWithEmailAndPassword(
-                          email: email,
-                          password: password,
-                        );
-                        setState(() {
-                          erreurAuth="";
-                        });
-                       /*User? user=  FirebaseAuth.instance.currentUser;
+
+
+                      setState(() {
+                        erreurAuth="";
+                        MatriculeExiste="";
+                      });
+                      FirebaseFirestore.instance
+                          .collection('client')
+                          .get().then((value) async { value.docs.forEach((element) {
+                        if(element.data()["Matricule"]==matricule){
+                          setState(() {
+                            MatriculeExiste="Matricule existe deja";
+                          });
+                        }
+
+                      });
+
+                      if (MatriculeExiste == "") {
+                        try {
+
+                          UserCredential  userCredential = await FirebaseAuth.instance
+                              .createUserWithEmailAndPassword(
+                            email: email,
+                            password: password,
+                          );
+                          setState(() {
+                            erreurAuth="";
+                          });
+                          /*User? user=  FirebaseAuth.instance.currentUser;
                         if(user?.emailVerified==false){
                           setState(() {
                             erreurAuth="virfier votre email";
@@ -731,85 +750,92 @@ setState(() {
                           });
 
                         }*/
-                       print(FirebaseAuth.instance.currentUser?.email.toString()) ;
-                      //checkEmail(userCredential.user as User );
-                      } on FirebaseAuthException catch (e) {
-                        if (e.code == 'weak-password') {
+
+                          //checkEmail(userCredential.user as User );
+                        } on FirebaseAuthException catch (e) {
+                          if (e.code == 'weak-password') {
+                            setState(() {
+                              erreurAuth = "eak-password";
+                            });
+                            print('The password provided is too weak.');
+                          } else if (e.code == 'email-already-in-use') {
+                            setState(() {
+                              erreurAuth =
+                              " Le compte existe déjà pour cet e-mail";
+                            });
+                            print('The account already exists for that email.');
+                          }
+                        } catch (e) {
                           setState(() {
-                            erreurAuth = "eak-password";
+                            erreurAuth = " operation-not-allowed";
                           });
-                          print('The password provided is too weak.');
-                        } else if (e.code == 'email-already-in-use') {
-                          setState(() {
-                            erreurAuth =
-                                " Le compte existe déjà pour cet e-mail";
-                          });
-                          print('The account already exists for that email.');
+                          print(e);
                         }
-                      } catch (e) {
-                        setState(() {
-                          erreurAuth = " operation-not-allowed";
-                        });
-                        print(e);
-                      }
-
-
-                      FirebaseFirestore.instance
-                          .collection('client')
-                          .get().then((value) => value.docs.forEach((element) {
-                        if(element.data()["Matricule"]==matricule){
-                          setState(() {
-                            erreurAuth="Matricule existe deja";
-                          });
-                        }
-
-                      }));
-                      if (erreurAuth == "") {
-                        if (img != null) {
-                          final storageRef = FirebaseStorage.instance.ref();
-                          final now = DateTime.now();
+                        if(erreurAuth==""){
+                          if (img != null) {
+                            final storageRef = FirebaseStorage.instance.ref();
+                            final now = DateTime.now();
 // Create a reference to "mountains.jpg"
-                          final mountainsRef = storageRef.child("image/$nom"+matricule);
-                          try {
-                            await mountainsRef.putFile(img!);
-                          } on FirebaseException catch (e) {
+                            final mountainsRef = storageRef.child("image/$nom"+matricule);
+                            try {
+                              await mountainsRef.putFile(img!);
+                            } on FirebaseException catch (e) {
 
-                            print(e.message.toString());
+                              print(e.message.toString());
+                            }
+
+                            url = await mountainsRef.getDownloadURL();
+                            setState(() {
+                              UrlImage=url;
+                              print("$UrlImage");
+                            });
+                            print (url);
+
                           }
 
-                          url = await mountainsRef.getDownloadURL();
-                          setState(() {
-                            UrlImage=url;
-                            print("$UrlImage");
-                          });
-                          print (url);
+                          final now = DateTime.now();
+                          await   FirebaseFirestore.instance.collection("client").add({
+                            "Abonnement":{
+                              "Debut":now
+                              ,
+                              "Fin":now.add(Duration(days: dure)),
+                              "Duration":dure,
+                              "Prix":prix+"DH"},
+                            "Adress":adress,
+                            "Email":email,
+                            "Matricule":matricule,
+                            "Nom":nom,
+                            "Prenom":prenom,
+                            "Tele":tele,
+                            "Urlimage":UrlImage,
 
+                          });
+                          setState(() {
+                            islaoding=false;
+                          });
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => const Client()));
+                        }else {
+                          setState(() {
+                            islaoding=false;
+                          });
+                          AwesomeDialog(
+                            context: context,
+                            keyboardAware: true,
+                            dismissOnBackKeyPress: false,
+                            dialogType: DialogType.WARNING,
+                            animType: AnimType.BOTTOMSLIDE,
+                            btnCancelText: "Annuler",
+                            btnOkText: "ok",
+                            title: erreurAuth,
+                            // padding: const EdgeInsets.all(5.0),
+                            btnCancelOnPress: () {},
+                            btnOkOnPress: () {},
+                          ).show();
                         }
 
-                        final now = DateTime.now();
-                        await   FirebaseFirestore.instance.collection("client").add({
-                          "Abonnement":{
-                            "Debut":now
-                            ,
-                            "Fin":now.add(Duration(days: dure)),
-                            "Duration":dure,
-                            "Prix":prix+"DH"},
-                          "Adress":adress,
-                          "Email":email,
-                          "Matricule":matricule,
-                          "Nom":nom,
-                          "Prenom":prenom,
-                          "Tele":tele,
-                          "Urlimage":UrlImage,
-
-                        });
-                        setState(() {
-                          islaoding=false;
-                        });
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => const Client()));
                       } else {
                         setState(() {
                           islaoding=false;
@@ -822,12 +848,14 @@ setState(() {
                           animType: AnimType.BOTTOMSLIDE,
                           btnCancelText: "Annuler",
                           btnOkText: "ok",
-                          title: erreurAuth,
+                          title: MatriculeExiste,
                           // padding: const EdgeInsets.all(5.0),
                           btnCancelOnPress: () {},
                           btnOkOnPress: () {},
                         ).show();
                       }
+                      });
+
                     }
                     else{
 
@@ -849,16 +877,16 @@ setState(() {
                       padding: MaterialStateProperty.all<EdgeInsets>(
                           EdgeInsets.all(10)),
                       backgroundColor:
-                          MaterialStateProperty.all(Colors.red[900]),
+                      MaterialStateProperty.all(Colors.red[900]),
                       shadowColor: MaterialStateProperty.all(Colors.black),
                       shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                           RoundedRectangleBorder(
-                        side: const BorderSide(
-                            color: Colors.white,
-                            style: BorderStyle.solid,
-                            width: 2),
-                        borderRadius: BorderRadius.circular(15),
-                      ))))
+                            side: const BorderSide(
+                                color: Colors.white,
+                                style: BorderStyle.solid,
+                                width: 2),
+                            borderRadius: BorderRadius.circular(15),
+                          ))))
             ]),
             const SizedBox(
               height: 200,
@@ -868,7 +896,7 @@ setState(() {
       ),
     );
   }
-  /*Future<void>VedifierEmail(){
+/*Future<void>VedifierEmail(){
 
   }
 

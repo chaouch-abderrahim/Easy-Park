@@ -17,8 +17,8 @@ class Acceuil extends StatefulWidget {
 
 class _AcceuilState extends State<Acceuil> {
   final _auth = FirebaseAuth.instance;
-   String email="";
-   String password="";
+  String email="";
+  String password="";
   bool spin = false;
   bool etat = false;
   bool _validatepassword = false;
@@ -50,7 +50,7 @@ class _AcceuilState extends State<Acceuil> {
           child: Text(
             str,
             style:
-                TextStyle(fontWeight: FontWeight.w600, fontSize: 20, color: c),
+            TextStyle(fontWeight: FontWeight.w600, fontSize: 20, color: c),
           ),
         ),
       ],
@@ -81,30 +81,31 @@ class _AcceuilState extends State<Acceuil> {
             _validatepassword=false;
           });
         }
-       if(_validatepassword==false && _validatemail==false){
-        try {
-         await _auth.signInWithEmailAndPassword(
-              email: email, password: password).then((value)=>{
-          if (email.compareTo("controleur@gmail.com") == 0 &&
-          password.compareTo("controleur") == 0) {
-              Navigator.push(
-              context, MaterialPageRoute(builder: (context) => const Control()))
-        } else {
-        Navigator.push(
-        context, MaterialPageRoute(builder: (context) => const Client()))
-        }
-          });
-         setState(() {
-           etat=false;
-         });
+        if(_validatepassword==false && _validatemail==false){
+          try {
+            print(password);
+            await _auth.signInWithEmailAndPassword(
+                email: email, password: password).then((value)=>{
+              if (email.compareTo("controleur@gmail.com") == 0 &&
+                  password.compareTo("controleur") == 0) {
+                Navigator.push(
+                    context, MaterialPageRoute(builder: (context) => const Control()))
+              } else {
+                Navigator.push(
+                    context, MaterialPageRoute(builder: (context) => const Client()))
+              }
+            });
+            setState(() {
+              etat=false;
+            });
 
-        } catch (e) {
-          print("bonjour   $e");
-          setState(() {
-            etat=true;
-          });
+          } catch (e) {
+            print("bonjour   $e");
+            setState(() {
+              etat=true;
+            });
 
-        }}
+          }}
       },
       style: ButtonStyle(
         backgroundColor: MaterialStateProperty.all(Colors.white),
@@ -165,108 +166,108 @@ class _AcceuilState extends State<Acceuil> {
   Widget build(BuildContext context) {
     return SafeArea(
         child: Scaffold(
-      backgroundColor: Colors.amber,
-      resizeToAvoidBottomInset: false,
-      body: ModalProgressHUD(
-        inAsyncCall: spin,
-        child: Column(
-            children: [
-          title(),
-          label(str: 'Email :'),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 12),
-            child: TextField(
-              onChanged: (value) {
-                email = value;
-              },
-              cursorColor: Colors.transparent,
-              obscureText: false,
-              style: const TextStyle(color: Colors.brown, fontSize: 20),
-              decoration: InputDecoration(
-                errorText: _validatemail ? 'Value Can\'t Be Empty' : null,
-                fillColor: Colors.amberAccent,
-                border: InputBorder.none,
-                filled: true,
-                hintText: 'Email',
-                hintStyle: const TextStyle(
+          backgroundColor: Colors.amber,
+          resizeToAvoidBottomInset: false,
+          body: ModalProgressHUD(
+            inAsyncCall: spin,
+            child: Column(
+                children: [
+                  title(),
+                  label(str: 'Email :'),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 12),
+                    child: TextField(
+                      onChanged: (value) {
+                        email = value;
+                      },
+                      cursorColor: Colors.transparent,
+                      obscureText: false,
+                      style: const TextStyle(color: Colors.brown, fontSize: 20),
+                      decoration: InputDecoration(
+                        errorText: _validatemail ? 'Value Can\'t Be Empty' : null,
+                        fillColor: Colors.amberAccent,
+                        border: InputBorder.none,
+                        filled: true,
+                        hintText: 'Email',
+                        hintStyle: const TextStyle(
 
-                  color: Colors.black,
+                          color: Colors.black,
 
-                ),
-                prefixIcon: const Icon(
-                  Icons.email,
-                  color: Colors.orange,
-                  size: 23,
-                ),
-              ),
-            ),
+                        ),
+                        prefixIcon: const Icon(
+                          Icons.email,
+                          color: Colors.orange,
+                          size: 23,
+                        ),
+                      ),
+                    ),
+                  ),
+
+                  label(str: 'Password :'),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 12),
+                    child: TextField(
+                      keyboardType: TextInputType.emailAddress,
+                      onChanged: (value) {
+                        password = value;
+                      },
+                      cursorColor: Colors.transparent,
+                      obscureText: visible,
+                      style: const TextStyle(color: Colors.brown, fontSize: 20),
+                      decoration: InputDecoration(
+                        errorText: _validatepassword ? 'Value Can\'t Be Empty' : null,
+                        fillColor: Colors.amberAccent,
+                        border: InputBorder.none,
+                        filled: true,
+                        hintText: 'pasword',
+                        hintStyle: const TextStyle(
+
+                          color: Colors.black,
+
+                        ),
+                        suffixIcon: visible
+                            ? IconButton(
+                            onPressed: () {
+                              setState(() {
+                                visible = false;
+                              });
+                            },
+                            icon: const Icon(
+                              Icons.visibility_off_outlined,
+                              color: Colors.deepOrange,
+                            ))
+                            : IconButton(
+                            onPressed: () {
+                              setState(() {
+                                visible = true;
+                              });
+                            },
+                            icon: const Icon(
+                              Icons.visibility,
+                              color: Colors.deepOrange,
+                            )),
+                        prefixIcon: const Icon(
+                          Icons.lock,
+                          color: Colors.orange,
+                          size: 23,
+                        ),
+                      ),
+                    ),
+                  ),
+
+                  const SizedBox(
+                    height: 32,
+                  ),
+                  Visibility(
+                    visible: etat,
+                    child: Text("password ou Email erreur",style: TextStyle(
+                        color: Colors.red[900]
+                    ),),
+                  ),
+                  _passwordOublier(), //textField(bl:true, st:'email',i: Icon(Icons.email_outlined) ),
+                  _button(),
+                ]),
           ),
-
-          label(str: 'Password :'),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 12),
-            child: TextField(
-              keyboardType: TextInputType.emailAddress,
-              onChanged: (value) {
-                password = value;
-              },
-              cursorColor: Colors.transparent,
-              obscureText: visible,
-              style: const TextStyle(color: Colors.brown, fontSize: 20),
-              decoration: InputDecoration(
-                errorText: _validatepassword ? 'Value Can\'t Be Empty' : null,
-                fillColor: Colors.amberAccent,
-                border: InputBorder.none,
-                filled: true,
-                hintText: 'pasword',
-                hintStyle: const TextStyle(
-
-                  color: Colors.black,
-
-                ),
-                suffixIcon: visible
-                    ? IconButton(
-                    onPressed: () {
-                      setState(() {
-                        visible = false;
-                      });
-                    },
-                    icon: const Icon(
-                      Icons.visibility_off_outlined,
-                      color: Colors.deepOrange,
-                    ))
-                    : IconButton(
-                    onPressed: () {
-                      setState(() {
-                        visible = true;
-                      });
-                    },
-                    icon: const Icon(
-                      Icons.visibility,
-                      color: Colors.deepOrange,
-                    )),
-                prefixIcon: const Icon(
-                  Icons.lock,
-                  color: Colors.orange,
-                  size: 23,
-                ),
-              ),
-            ),
-          ),
-
-          const SizedBox(
-            height: 32,
-          ),
-         Visibility(
-           visible: etat,
-             child: Text("password ou Email erreur",style: TextStyle(
-               color: Colors.red[900]
-             ),),
-         ),
-          _passwordOublier(), //textField(bl:true, st:'email',i: Icon(Icons.email_outlined) ),
-          _button(),
-        ]),
-      ),
-    ));
+        ));
   }
 }
