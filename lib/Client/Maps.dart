@@ -50,9 +50,12 @@ class _MapsState extends State<Maps> {
 
   @override
   void initState() {
-    // TODO: implement initState
+    // TODO: implement initState .collection("Parking")
+    // .orderBy("Time Entrer", "desc")
     super.initState();
-    FirebaseFirestore.instance.collection("Parking").get().then(
+    FirebaseFirestore.instance.collection("Parking").orderBy("Time Entrer", descending: true).limit(1).get()
+
+        .then(
         (value){
           value.docs.forEach((element) {
            if(element.data()["Matricule"]==matricule){

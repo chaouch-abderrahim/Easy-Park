@@ -91,7 +91,7 @@ class _ResetScreenState extends State<ResetScreen> {
                         animType: AnimType.BOTTOMSLIDE,
 
                         btnOkText: "ok",
-                        title: "Vérifier votre e-mail",
+                        title: "We sent the email to "+_email +"Check your inbox to activate your account.",
                         // padding: const EdgeInsets.all(5.0),
 
                         btnOkOnPress: () {},

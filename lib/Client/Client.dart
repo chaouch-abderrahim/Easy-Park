@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:easy_park/Client/ContactUS.dart';
 import 'package:easy_park/Client/payerFacture.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -185,6 +186,16 @@ class _ClientState extends State<Client> {
                 onTap: () {
                   Navigator.push(context,
                       MaterialPageRoute(builder: (context) => PayerFacture()));
+                },
+              ),
+              ListTile(
+                title: const Text(
+                  'Contact Us',
+                  style: TextStyle(fontSize: 20),
+                ),
+                onTap: () {
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => const ContactUS()));
                 },
               ),
               ListTile(

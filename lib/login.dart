@@ -60,6 +60,9 @@ class _AcceuilState extends State<Acceuil> {
   Widget _button() {
     return ElevatedButton(
       onPressed: () async {
+        setState(() {
+          spin=true;
+        });
         if(email==""){
           setState(() {
             _validatemail=true;
@@ -68,6 +71,7 @@ class _AcceuilState extends State<Acceuil> {
         else{
           setState(() {
             _validatemail=false;
+
           });
         }
 
@@ -83,11 +87,15 @@ class _AcceuilState extends State<Acceuil> {
         }
         if(_validatepassword==false && _validatemail==false){
           try {
-            print(password);
+
             await _auth.signInWithEmailAndPassword(
                 email: email, password: password).then((value)=>{
+            setState(() {
+            spin=false;
+            }),
               if (email.compareTo("controleur@gmail.com") == 0 &&
                   password.compareTo("controleur") == 0) {
+
                 Navigator.push(
                     context, MaterialPageRoute(builder: (context) => const Control()))
               } else {
@@ -97,15 +105,21 @@ class _AcceuilState extends State<Acceuil> {
             });
             setState(() {
               etat=false;
+              spin=false;
             });
 
           } catch (e) {
             print("bonjour   $e");
             setState(() {
               etat=true;
+              spin=false;
             });
 
-          }}
+          }}else{
+          setState(() {
+            spin=false;
+          });
+        }
       },
       style: ButtonStyle(
         backgroundColor: MaterialStateProperty.all(Colors.white),
@@ -161,7 +175,22 @@ class _AcceuilState extends State<Acceuil> {
       ),
     );
   }
-
+@override
+  void dispose() {
+    // TODO: implement dispose
+  setState(() {
+    spin=false;
+  });
+    super.dispose();
+  }
+  @override
+  void initState() {
+    // TODO: implement initState
+    setState(() {
+      spin=false;
+    });
+    super.initState();
+  }
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -178,7 +207,7 @@ class _AcceuilState extends State<Acceuil> {
                     padding: const EdgeInsets.symmetric(horizontal: 12),
                     child: TextField(
                       onChanged: (value) {
-                        email = value;
+                        email = value.trim();
                       },
                       cursorColor: Colors.transparent,
                       obscureText: false,
@@ -209,7 +238,7 @@ class _AcceuilState extends State<Acceuil> {
                     child: TextField(
                       keyboardType: TextInputType.emailAddress,
                       onChanged: (value) {
-                        password = value;
+                        password = value.trim();
                       },
                       cursorColor: Colors.transparent,
                       obscureText: visible,

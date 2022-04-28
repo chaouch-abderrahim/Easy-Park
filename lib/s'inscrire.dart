@@ -33,7 +33,7 @@ class _InscriptionState extends State<Inscription> {
   final controllerE = TextEditingController();
   final controllerPwd = TextEditingController();
   final controllerA = TextEditingController();
-  String erreurAuth = "";
+  String erreurAuth = "",erreurVirifiedEmail="";
   String erreurEmail = "le champs est obligatoire",
       erreurNom = "le champs est obligatoire",
       erreurPrenom = "le champs est obligatoire",
@@ -57,6 +57,7 @@ class _InscriptionState extends State<Inscription> {
       validePassword = false,
       visible = false;
   String url="",UrlImage="";
+  User? user= FirebaseAuth.instance.currentUser ;
 
   Timer? _timer;
   File? img;
@@ -131,10 +132,9 @@ class _InscriptionState extends State<Inscription> {
   @override
   void dispose() {
     // TODO: implement dispose
-//_timer!.cancel();
-    setState(() {
+        _timer?.cancel();
+
       islaoding=false;
-    });
     super.dispose();
   }
 
@@ -715,44 +715,32 @@ class _InscriptionState extends State<Inscription> {
                         if(element.data()["Matricule"]==matricule){
                           setState(() {
                             MatriculeExiste="Matricule existe deja";
+                            islaoding=false;
                           });
                         }
 
                       });
 
                       if (MatriculeExiste == "") {
-                        try {
+                        if(user==null) {
+                          try {
 
                           UserCredential  userCredential = await FirebaseAuth.instance
                               .createUserWithEmailAndPassword(
-                            email: email,
-                            password: password,
+                            email: email.trim(),
+                            password: password.trim(),
                           );
                           setState(() {
                             erreurAuth="";
                           });
-                          /*User? user=  FirebaseAuth.instance.currentUser;
-                        if(user?.emailVerified==false){
-                          setState(() {
-                            erreurAuth="virfier votre email";
-                          });
-                          user?.sendEmailVerification();
-                          _timer=Timer.periodic(const Duration(seconds: 2), (timer) async {
 
-                                await  user!.reload();
-                            if (user.emailVerified) {
-                              setState(() {
-                                erreurAuth="";
-                              });
-                              print('Cancel timer');
-                              timer.cancel();
-                            }
-                          });
 
-                        }*/
 
                           //checkEmail(userCredential.user as User );
                         } on FirebaseAuthException catch (e) {
+                            setState(() {
+                              islaoding=false;
+                            });
                           if (e.code == 'weak-password') {
                             setState(() {
                               erreurAuth = "eak-password";
@@ -771,7 +759,11 @@ class _InscriptionState extends State<Inscription> {
                           });
                           print(e);
                         }
-                        if(erreurAuth==""){
+                        }else {
+                        /*  user = FirebaseAuth.instance.currentUser;
+                          checkEmail(user);*/
+                        }
+                        if(erreurAuth=="" && erreurVirifiedEmail==""){
                           if (img != null) {
                             final storageRef = FirebaseStorage.instance.ref();
                             final now = DateTime.now();
@@ -802,8 +794,8 @@ class _InscriptionState extends State<Inscription> {
                               "Duration":dure,
                               "Prix":prix+"DH"},
                             "Adress":adress,
-                            "Email":email,
-                            "Matricule":matricule,
+                            "Email":email.trim(),
+                            "Matricule":matricule.trim(),
                             "Nom":nom,
                             "Prenom":prenom,
                             "Tele":tele,
@@ -829,7 +821,7 @@ class _InscriptionState extends State<Inscription> {
                             animType: AnimType.BOTTOMSLIDE,
                             btnCancelText: "Annuler",
                             btnOkText: "ok",
-                            title: erreurAuth,
+                            title: erreurAuth==""?erreurVirifiedEmail:erreurAuth,
                             // padding: const EdgeInsets.all(5.0),
                             btnCancelOnPress: () {},
                             btnOkOnPress: () {},
@@ -896,50 +888,42 @@ class _InscriptionState extends State<Inscription> {
       ),
     );
   }
-/*Future<void>VedifierEmail(){
 
-  }
 
-  Future <void>checkEmail(User use) async{
-    if(use.emailVerified==false){
-      print(  use.email);
-
+  Future <void>checkEmail(User? use) async{
+    use?.reload();
+    FirebaseAuth.instance.currentUser?.reload();
+    if(use?.emailVerified==false){
+      use?.sendEmailVerification();
       setState(() {
-        erreurAuth = "Verfier votre Email  verified !";
+        erreurVirifiedEmail="verifier Email";
       });
-    use.sendEmailVerification();}
+      _timer=Timer.periodic(const Duration(seconds: 5), (timer) {
+        use?.reload();
+        FirebaseAuth.instance.currentUser?.reload();
+        if(use?.emailVerified==true){
+          setState(() {
+            islaoding=false;
+            erreurVirifiedEmail="";
+            print("okokokko");
+
+            _timer!.cancel();
+            timer.cancel();
+            return;
+          });
+        }else{
+          print(use?.emailVerified);
+        }
+      });
+    }
     else{
       setState(() {
-        erreurAuth = "";
+        erreurVirifiedEmail="";
+        return;
       });
-      return ;
     }
+    print(erreurVirifiedEmail);
+    print("hhhhhhhhhhh");
+  }
 
-    _timer=Timer.periodic(const Duration(seconds: 2), (timer)async {
-      await use.reload();
-      if (use.emailVerified == true) {
-        setState(() {
-          erreurAuth = "";
-          _timer?.cancel();
-        });
-
-        print("bien verifier");
-        return ;
-      }
-      else {
-
-
-         await use.reload();
-
-
-
-        print(use.emailVerified.toString()+" "+use.email.toString()+"ddddddd");
-      }
-
-
-
-    });
-    return;
-
-  }*/
 }
